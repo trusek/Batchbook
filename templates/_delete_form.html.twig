@@ -1,7 +1,6 @@
 {#
-    Formularz usuwania: POST z tokenem CSRF (stateless id "delete") i potwierdzeniem w przeglądarce
-    (kontroler Stimulus "confirm"). Kontroler sprawdza token przez
-    $this->isCsrfTokenValid('delete', $request->getPayload()->getString('_csrf_token')).
+    Formularz usuwania: POST z tokenem CSRF i potwierdzeniem w przeglądarce (kontroler Stimulus "confirm").
+    Id tokenu i nazwa pola są w App\Controller\DeleteForm, który też sprawdza token.
 
     Parametry: action (URL), message (treść pytania), label (tekst przycisku, domyślnie "Usuń"),
     frame (opcjonalnie: id ramki Turbo, którą ma odświeżyć odpowiedź, np. "journal").
@@ -11,6 +10,7 @@
       data-confirm-message-value="{{ message }}"
       data-action="submit->confirm#ask"
       {%- if frame is defined %} data-turbo-frame="{{ frame }}"{% endif %}>
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete') }}" data-controller="csrf-protection">
+    <input type="hidden" name="{{ constant('App\\Controller\\DeleteForm::TOKEN_FIELD') }}"
+           value="{{ csrf_token(constant('App\\Controller\\DeleteForm::TOKEN_ID')) }}" data-controller="csrf-protection">
     <button type="submit" class="secondary">{{ label|default('Usuń') }}</button>
 </form>

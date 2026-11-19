@@ -79,6 +79,28 @@ final class AddBatchTest extends AppWebTestCase
         ], $names);
     }
 
+    /**
+     * Data rozpoczęcia liczy się jako początek dnia, więc nastaw bez daty utworzony
+     * tego samego dnia jest wyżej. Przy równej dacie sortowania wyżej nastaw utworzony później.
+     */
+    public function testStartDateCountsAsStartOfDayAgainstCreationTimeOfUndatedBatch(): void
+    {
+        $this->setNow('2026-03-15 00:00');
+        $this->addBatch('Bez daty, utworzony 15 marca o północy', 'wine', '');
+        $this->setNow('2026-03-15 08:00');
+        $this->addBatch('Bez daty, utworzony 15 marca rano', 'wine', '');
+        $this->setNow('2026-03-15 20:00');
+        $this->addBatch('Start 15 marca, utworzony wieczorem', 'beer', '2026-03-15');
+
+        $names = array_column($this->batchRows($this->client->followRedirect()), 0);
+
+        self::assertSame([
+            'Bez daty, utworzony 15 marca rano',
+            'Start 15 marca, utworzony wieczorem',
+            'Bez daty, utworzony 15 marca o północy',
+        ], $names);
+    }
+
     public function testFormOffersBatchTypesWithPolishLabels(): void
     {
         $crawler = $this->client->request('GET', '/nastawy/nowy');

@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Clock\Test\ClockSensitiveTrait;
@@ -16,7 +17,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * - Baza testowa jest tworzona z migracji raz na przebieg (tests/bootstrap.php),
  *   a DAMA DoctrineTestBundle cofa zmiany po każdym teście, więc każdy test
  *   startuje na pustej bazie.
- * - Wspólne kroki: addBatch(), openBatch(), addEntry(), openEntryEdit(), editEntry(),
+ * - Wspólne akcje: addBatch(), openBatch(), addEntry(), openEntryEdit(), editEntry(),
  *   deleteEntry(); odczyt widoków: batchRows(), lastEntryDates(), journal(), entryWithNote().
  */
 abstract class AppWebTestCase extends WebTestCase
@@ -40,7 +41,7 @@ abstract class AppWebTestCase extends WebTestCase
      */
     protected function setNow(string $localDateTime): void
     {
-        static::mockTime(new \DateTimeImmutable($localDateTime, new \DateTimeZone('Europe/Warsaw')));
+        static::mockTime(new \DateTimeImmutable($localDateTime, new \DateTimeZone(Kernel::TIMEZONE)));
     }
 
     /**

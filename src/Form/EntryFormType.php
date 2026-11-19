@@ -10,7 +10,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Formularz wpisu (szybki wpis na stronie nastawu). Pola: entry[occurredAt], entry[note].
+ * Formularz wpisu: pola occurredAt i note. Używany jako szybki wpis na stronie nastawu
+ * (nazwa domyślna: entry[...]) i jako edycja wpisu w miejscu (nazwa entry_edit[...]).
+ * Opcja focus_note (domyślnie true) daje autofocus w notatce; na stronie ma go tylko jeden formularz.
  *
  * @extends AbstractType<Entry>
  */
@@ -28,7 +30,7 @@ final class EntryFormType extends AbstractType
             ])
             ->add('note', TextareaType::class, [
                 'label' => 'Notatka',
-                'attr' => ['rows' => 3, 'autofocus' => true],
+                'attr' => ['rows' => 3, 'autofocus' => $options['focus_note']],
             ]);
     }
 
@@ -36,7 +38,9 @@ final class EntryFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Entry::class,
+            'focus_note' => true,
         ]);
+        $resolver->setAllowedTypes('focus_note', 'bool');
     }
 
     public function getBlockPrefix(): string

@@ -45,6 +45,30 @@ final class EditEntryTest extends AppWebTestCase
         self::assertCount(1, $page->filter(sprintf('turbo-frame[id="%s"] [data-entry]', $target)));
     }
 
+    /**
+     * Pełna strona edycji (bez JS lub po błędzie walidacji) ma jeden autofocus: w notatce edytowanego wpisu,
+     * a nie w formularzu szybkiego wpisu.
+     */
+    public function testEditPageFocusesOnlyEditedNote(): void
+    {
+        $this->addBatch('Wino z aronii');
+        $this->openBatch('Wino z aronii');
+        $this->addEntry('zlano znad osadu', '2026-03-14T10:00');
+
+        $page = $this->openEntryEdit('zlano znad osadu');
+
+        $focused = $page->filter('[autofocus]');
+        self::assertCount(1, $focused);
+        self::assertSame('entry_edit[note]', $focused->attr('name'));
+
+        $page = $this->client->submitForm('Zapisz', ['entry_edit[note]' => '']);
+
+        self::assertResponseStatusCodeSame(422);
+        $focused = $page->filter('[autofocus]');
+        self::assertCount(1, $focused);
+        self::assertSame('entry_edit[note]', $focused->attr('name'));
+    }
+
     public function testChangingOnlyDateKeepsTime(): void
     {
         $this->addBatch('Wino z aronii');

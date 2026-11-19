@@ -16,17 +16,12 @@ class BatchRepository extends ServiceEntityRepository
         parent::__construct($registry, Batch::class);
     }
 
-    public function add(Batch $batch): void
-    {
-        $this->getEntityManager()->persist($batch);
-        $this->getEntityManager()->flush();
-    }
-
     /**
-     * Zapisuje zmiany w nastawie już zarządzanym przez Doctrine (edycja, miękkie usunięcie).
+     * Zapisuje nastaw: nowy (dodanie) lub zmieniony (edycja, miękkie usunięcie).
      */
     public function save(Batch $batch): void
     {
+        $this->getEntityManager()->persist($batch);
         $this->getEntityManager()->flush();
     }
 
@@ -36,19 +31,26 @@ class BatchRepository extends ServiceEntityRepository
     }
 
     /**
-     * Nieusunięte nastawy od najnowszych: po dacie rozpoczęcia, a gdy jej brak, po dacie utworzenia.
+     * Nieusunięte nastawy od najnowszych: po dacie rozpoczęcia (liczonej jako początek dnia),
+     * a gdy jej brak, po dacie utworzenia. Przy równej dacie sortowania wyżej nastaw utworzony później.
+     *
+     * Sortowanie w PHP na obiektach dat, bo w bazie data rozpoczęcia (DATE) i data utworzenia
+     * (DATETIME) mają różne formaty i nie porównują się wprost.
      *
      * @return list<Batch>
      */
     public function findForList(): array
     {
-        return $this->createQueryBuilder('b')
-            ->addSelect('COALESCE(b.startDate, b.createdAt) AS HIDDEN sortDate')
-            ->where('b.deletedAt IS NULL')
-            ->orderBy('sortDate', 'DESC')
-            ->addOrderBy('b.createdAt', 'DESC')
-            ->addOrderBy('b.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+        $batches = $this->findBy(['deletedAt' => null]);
+
+        usort($batches, static fn (Batch $a, Batch $b): int => [self::sortDate($b), $b->getCreatedAt(), $b->getId()]
+            <=> [self::sortDate($a), $a->getCreatedAt(), $a->getId()]);
+
+        return $batches;
+    }
+
+    private static function sortDate(Batch $batch): \DateTimeImmutable
+    {
+        return $batch->getStartDate()?->setTime(0, 0) ?? $batch->getCreatedAt();
     }
 }

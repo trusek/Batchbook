@@ -18,17 +18,12 @@ class EntryRepository extends ServiceEntityRepository
         parent::__construct($registry, Entry::class);
     }
 
-    public function add(Entry $entry): void
-    {
-        $this->getEntityManager()->persist($entry);
-        $this->getEntityManager()->flush();
-    }
-
     /**
-     * Zapisuje zmiany zarządzanego wpisu (edycja, miękkie usunięcie).
+     * Zapisuje wpis: nowy (szybki wpis) lub zmieniony (edycja, miękkie usunięcie).
      */
     public function save(Entry $entry): void
     {
+        $this->getEntityManager()->persist($entry);
         $this->getEntityManager()->flush();
     }
 
@@ -48,7 +43,7 @@ class EntryRepository extends ServiceEntityRepository
     }
 
     /**
-     * Data ostatniego wpisu każdego nastawu: najpóźniejszy czas nieusuniętego wpisu,
+     * Data ostatniego wpisu każdego nieusuniętego nastawu: najpóźniejszy czas nieusuniętego wpisu,
      * który nie jest późniejszy niż $now (wpisy przyszłe się nie liczą).
      * Nastawy bez takiego wpisu nie występują w wyniku.
      *
@@ -58,7 +53,9 @@ class EntryRepository extends ServiceEntityRepository
     {
         $rows = $this->createQueryBuilder('e')
             ->select('IDENTITY(e.batch) AS batchId', 'MAX(e.occurredAt) AS lastEntryAt')
+            ->join('e.batch', 'b')
             ->where('e.deletedAt IS NULL')
+            ->andWhere('b.deletedAt IS NULL')
             ->andWhere('e.occurredAt <= :now')
             ->setParameter('now', $now, Types::DATETIME_IMMUTABLE)
             ->groupBy('e.batch')

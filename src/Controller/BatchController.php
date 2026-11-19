@@ -3,16 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Batch;
-use App\Entity\Entry;
 use App\Form\BatchFormType;
-use App\Form\EntryFormType;
 use App\Repository\BatchRepository;
 use App\Repository\EntryRepository;
 use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class BatchController extends AbstractController
@@ -40,7 +37,7 @@ final class BatchController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->batches->add($batch);
+            $this->batches->save($batch);
 
             return $this->redirectToRoute('batch_index', status: Response::HTTP_SEE_OTHER);
         }
@@ -56,20 +53,11 @@ final class BatchController extends AbstractController
      * Formularz wysyła się do EntryController::new.
      */
     #[Route('/nastawy/{id}', name: 'batch_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(int $id, EntryRepository $entries): Response
+    public function show(int $id, BatchPage $page): Response
     {
         $batch = $this->batches->findVisible($id) ?? throw $this->createNotFoundException();
 
-        $entry = new Entry($batch, $this->clock->now());
-        $entry->setOccurredAt($this->clock->now());
-
-        return $this->render('batch/show.html.twig', [
-            'batch' => $batch,
-            'entries' => $entries->findJournal($batch),
-            'entry_form' => $this->createForm(EntryFormType::class, $entry, [
-                'action' => $this->generateUrl('entry_new', ['batchId' => $batch->getId()]),
-            ]),
-        ]);
+        return $this->render(BatchPage::TEMPLATE, $page->parameters($batch));
     }
 
     #[Route('/nastawy/{id}/edycja', name: 'batch_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
@@ -96,13 +84,10 @@ final class BatchController extends AbstractController
      * Miękkie usunięcie nastawu. Formularz z templates/_delete_form.html.twig (potwierdzenie + token CSRF).
      */
     #[Route('/nastawy/{id}/usun', name: 'batch_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function delete(int $id, Request $request): Response
+    public function delete(int $id, Request $request, DeleteForm $deleteForm): Response
     {
         $batch = $this->batches->findVisible($id) ?? throw $this->createNotFoundException();
-
-        if (!$this->isCsrfTokenValid('delete', $request->getPayload()->getString('_csrf_token'))) {
-            throw new AccessDeniedHttpException('Nieprawidłowy token CSRF.');
-        }
+        $deleteForm->denyUnlessValid($request);
 
         $batch->markDeleted($this->clock->now());
         $this->batches->save($batch);
