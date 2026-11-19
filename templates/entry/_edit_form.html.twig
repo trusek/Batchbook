@@ -1,0 +1,15 @@
+{#
+    Formularz edycji wpisu w miejscu wpisu (ta sama ramka "entry-<id>").
+    Wysyła się do ramki "journal": po zapisie odświeża się cały dziennik, więc wpis trafia na właściwe miejsce.
+#}
+<turbo-frame id="entry-{{ entry.id }}">
+    <article data-entry-edit>
+        {{ form_start(form, {attr: {'data-turbo-frame': 'journal'}}) }}
+            {{ form_widget(form) }}
+            <div class="entry-actions">
+                <button type="submit">Zapisz</button>
+                <a href="{{ path('batch_show', {id: entry.batch.id}) }}">Anuluj</a>
+            </div>
+        {{ form_end(form) }}
+    </article>
+</turbo-frame>

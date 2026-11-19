@@ -85,4 +85,12 @@ class Entry
     {
         return $this->deletedAt;
     }
+
+    /**
+     * Miękkie usunięcie: wpis znika z aplikacji, ale zostaje w bazie.
+     */
+    public function markDeleted(\DateTimeImmutable $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
 }

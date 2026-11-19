@@ -35,14 +35,21 @@
 
     <section aria-labelledby="journal-heading">
         <h2 id="journal-heading">Dziennik</h2>
-        {% if entries is empty %}
-            <p>Brak wpisów.</p>
-        {% else %}
-            <div data-journal>
-                {% for entry in entries %}
-                    {{ include('entry/_entry.html.twig', {entry: entry}) }}
-                {% endfor %}
-            </div>
-        {% endif %}
+        {# Ramka "journal": cel zapisu edycji i usunięcia wpisu, żeby dziennik odświeżał się w całości. #}
+        <turbo-frame id="journal">
+            {% if entries is empty %}
+                <p>Brak wpisów.</p>
+            {% else %}
+                <div data-journal>
+                    {% for entry in entries %}
+                        {% if edit_form is defined and entry is same as(edited_entry) %}
+                            {{ include('entry/_edit_form.html.twig', {entry: entry, form: edit_form}) }}
+                        {% else %}
+                            {{ include('entry/_entry.html.twig', {entry: entry}) }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </turbo-frame>
     </section>
 {% endblock %}

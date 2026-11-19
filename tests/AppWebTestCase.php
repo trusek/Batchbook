@@ -16,8 +16,8 @@ use Symfony\Component\DomCrawler\Crawler;
  * - Baza testowa jest tworzona z migracji raz na przebieg (tests/bootstrap.php),
  *   a DAMA DoctrineTestBundle cofa zmiany po każdym teście, więc każdy test
  *   startuje na pustej bazie.
- * - Wspólne kroki: addBatch(), openBatch(), addEntry(); odczyt widoków:
- *   batchRows(), journal().
+ * - Wspólne kroki: addBatch(), openBatch(), addEntry(), openEntryEdit(), editEntry(),
+ *   deleteEntry(); odczyt widoków: batchRows(), lastEntryDates(), journal(), entryWithNote().
  */
 abstract class AppWebTestCase extends WebTestCase
 {
@@ -85,6 +85,70 @@ abstract class AppWebTestCase extends WebTestCase
         $crawler = $this->client->submitForm('Dodaj wpis', $values);
 
         return $this->client->getResponse()->isRedirect() ? $this->client->followRedirect() : $crawler;
+    }
+
+    /**
+     * Wpis w dzienniku (element [data-entry]) o podanej notatce, na stronie nastawu.
+     */
+    protected function entryWithNote(Crawler $page, string $note): Crawler
+    {
+        $entry = $page->filter('[data-entry]')->reduce(
+            static fn (Crawler $e): bool => trim($e->filter('[data-entry-note]')->text()) === $note,
+        );
+        self::assertCount(1, $entry, sprintf('Brak wpisu „%s” w dzienniku.', $note));
+
+        return $entry;
+    }
+
+    /**
+     * Klika „Edytuj” przy wpisie o podanej notatce na aktualnie otwartej stronie nastawu.
+     * Zwraca odpowiedź z formularzem edycji.
+     */
+    protected function openEntryEdit(string $note): Crawler
+    {
+        $entry = $this->entryWithNote($this->client->getCrawler(), $note);
+
+        return $this->client->click($entry->selectLink('Edytuj')->link());
+    }
+
+    /**
+     * Edytuje wpis o podanej notatce (pola entry_edit[occurredAt|note]).
+     * Po sukcesie podąża za przekierowaniem i zwraca stronę nastawu;
+     * po błędzie walidacji zwraca odpowiedź z formularzem (422).
+     *
+     * @param array<string, string> $values
+     */
+    protected function editEntry(string $note, array $values): Crawler
+    {
+        $this->openEntryEdit($note);
+        $crawler = $this->client->submitForm('Zapisz', $values);
+
+        return $this->client->getResponse()->isRedirect() ? $this->client->followRedirect() : $crawler;
+    }
+
+    /**
+     * Usuwa wpis o podanej notatce z aktualnie otwartej strony nastawu (przycisk „Usuń” przy wpisie).
+     * Nie podąża za przekierowaniem.
+     *
+     * @param array<string, string> $values np. ['_csrf_token' => 'zly'] do testów odrzucenia
+     */
+    protected function deleteEntry(string $note, array $values = []): void
+    {
+        $entry = $this->entryWithNote($this->client->getCrawler(), $note);
+        $this->client->submit($entry->selectButton('Usuń')->form(), $values);
+    }
+
+    /**
+     * @return array<string, string> nazwa nastawu => data ostatniego wpisu (dd.mm.rrrr HH:MM lub pusta)
+     */
+    protected function lastEntryDates(Crawler $crawler): array
+    {
+        $dates = [];
+        $crawler->filter('[data-batch]')->each(static function (Crawler $row) use (&$dates): void {
+            $dates[trim($row->filter('[data-batch-name]')->text())] = trim($row->filter('[data-batch-last-entry-at]')->text());
+        });
+
+        return $dates;
     }
 
     /**

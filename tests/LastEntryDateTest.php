@@ -2,8 +2,6 @@
 
 namespace App\Tests;
 
-use Symfony\Component\DomCrawler\Crawler;
-
 final class LastEntryDateTest extends AppWebTestCase
 {
     public function testListShowsLatestEntryNotLaterThanNowSkippingFutureEntries(): void
@@ -43,18 +41,5 @@ final class LastEntryDateTest extends AppWebTestCase
         $crawler = $this->client->request('GET', '/');
 
         self::assertSame(['Miód z lipy' => '18.03.2026 09:00'], $this->lastEntryDates($crawler));
-    }
-
-    /**
-     * @return array<string, string> nazwa nastawu => data ostatniego wpisu (dd.mm.rrrr HH:MM lub pusta)
-     */
-    private function lastEntryDates(Crawler $crawler): array
-    {
-        $dates = [];
-        $crawler->filter('[data-batch]')->each(static function (Crawler $row) use (&$dates): void {
-            $dates[trim($row->filter('[data-batch-name]')->text())] = trim($row->filter('[data-batch-last-entry-at]')->text());
-        });
-
-        return $dates;
     }
 }

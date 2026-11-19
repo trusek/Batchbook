@@ -25,6 +25,29 @@ class EntryRepository extends ServiceEntityRepository
     }
 
     /**
+     * Zapisuje zmiany zarządzanego wpisu (edycja, miękkie usunięcie).
+     */
+    public function save(Entry $entry): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * Wpis widoczny w aplikacji: nieusunięty i należący do nieusuniętego nastawu.
+     */
+    public function findVisible(int $id): ?Entry
+    {
+        return $this->createQueryBuilder('e')
+            ->join('e.batch', 'b')
+            ->where('e.id = :id')
+            ->andWhere('e.deletedAt IS NULL')
+            ->andWhere('b.deletedAt IS NULL')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * Data ostatniego wpisu każdego nastawu: najpóźniejszy czas nieusuniętego wpisu,
      * który nie jest późniejszy niż $now (wpisy przyszłe się nie liczą).
      * Nastawy bez takiego wpisu nie występują w wyniku.
