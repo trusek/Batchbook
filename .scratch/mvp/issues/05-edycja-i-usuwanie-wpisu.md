@@ -4,7 +4,7 @@
 
 **Blocked by:** 03 (Strona nastawu i szybki wpis), 04 (Wpisy przyszłe i data ostatniego wpisu na liście)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] „Edytuj” przy wpisie zamienia go na formularz w miejscu (Turbo Frame); zapis odświeża dziennik tak, by wpis trafił na właściwą pozycję.
 - [x] Zmiana samej daty w formularzu edycji nie zmienia godziny.
@@ -15,3 +15,7 @@
 - [x] Edycja lub usunięcie usuniętego wpisu zwraca 404.
 - [x] Test scenariusza 5: gdy edytuję lub usunę wpis, wtedy dziennik się aktualizuje, a usunięty wpis znika.
 - [x] Testy: edycja daty przesuwa wpis w dzienniku; usunięty wpis nie wpływa na datę ostatniego wpisu; usunięcie bez poprawnego tokenu CSRF jest odrzucane.
+
+## Comments
+
+Zrealizowane na gałęzi integracyjnej `mvp` (wraz z poprawkami z code review, commit 672a295).

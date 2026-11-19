@@ -4,7 +4,7 @@
 
 **Blocked by:** 03 (Strona nastawu i szybki wpis)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Wpis z czasem późniejszym niż bieżący czas zegara ma w HTML znacznik wpisu przyszłego (klasa lub atrybut) i wyraźny styl.
 - [x] Wpis na dziś na późniejszą godzinę jest przyszły, dopóki ta godzina nie minie; potem przestaje być wyróżniony bez żadnej akcji.
@@ -12,3 +12,7 @@
 - [x] Nastaw bez wpisów lub tylko z wpisami przyszłymi ma pustą datę ostatniego wpisu.
 - [x] Test scenariusza 4: gdy dodam wpis z datą za 3 dni i notatką „sprawdzić Blg”, wtedy jest wyróżniony jako przyszły.
 - [x] Testy: wpis dziś później niż teraz jest przyszły; po przesunięciu zegara za jego czas już nie jest; data ostatniego wpisu pomija wpisy przyszłe.
+
+## Comments
+
+Zrealizowane na gałęzi integracyjnej `mvp` (wraz z poprawkami z code review, commit 672a295).

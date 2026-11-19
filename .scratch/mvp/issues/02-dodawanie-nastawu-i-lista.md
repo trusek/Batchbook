@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 (Szkielet aplikacji i pusta lista nastawów)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Typ nastawu to wyliczenie w kodzie z wartościami wino i piwo oraz polskimi etykietami; dodanie nowego typu wymaga zmiany w jednym miejscu.
 - [x] Formularz nastawu: nazwa (wymagana, niepusta, może się powtarzać), typ (wybór z listy), data rozpoczęcia (sama data, opcjonalna, także wstecz), opis (opcjonalny, wieloliniowy).
@@ -14,3 +14,7 @@
 - [x] Sortowanie listy: malejąco po dacie rozpoczęcia, a dla nastawów bez daty rozpoczęcia po dacie utworzenia.
 - [x] Test scenariusza 1: zakładając pustą listę, gdy dodam „Wino z aronii”, typ wino, z dzisiejszą datą rozpoczęcia, wtedy nastaw pojawia się na liście.
 - [x] Testy: nastaw bez daty rozpoczęcia da się dodać; pusta nazwa jest odrzucana; dwa nastawy o tej samej nazwie mogą istnieć; kolejność listy z datami i bez.
+
+## Comments
+
+Zrealizowane na gałęzi integracyjnej `mvp` (wraz z poprawkami z code review, commit 672a295).

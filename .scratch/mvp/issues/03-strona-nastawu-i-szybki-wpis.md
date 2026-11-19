@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 (Dodawanie nastawu i lista nastawów)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Pozycja na liście nastawów prowadzi do strony nastawu.
 - [x] Strona nastawu pokazuje nazwę, typ, datę rozpoczęcia i opis (z zachowanymi podziałami linii).
@@ -17,3 +17,7 @@
 - [x] Test scenariusza 3: gdy dodam wpis z datą sprzed tygodnia, wtedy trafia we właściwe miejsce chronologicznie.
 - [x] Test scenariusza 6: gdy dodam nastaw bez daty rozpoczęcia, wtedy mogę mimo to dodawać wpisy.
 - [x] Testy: domyślny czas w formularzu równy czasowi zegara; pusta notatka odrzucana; kolejność wpisów o identycznym czasie.
+
+## Comments
+
+Zrealizowane na gałęzi integracyjnej `mvp` (wraz z poprawkami z code review, commit 672a295).

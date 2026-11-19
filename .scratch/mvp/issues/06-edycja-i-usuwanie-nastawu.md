@@ -4,7 +4,7 @@
 
 **Blocked by:** 03 (Strona nastawu i szybki wpis)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Nagłówek strony nastawu ma akcje „Edytuj” i „Usuń”.
 - [x] Edycja nastawu na osobnej stronie, z tymi samymi polami i walidacją co przy dodawaniu; po zapisie powrót na stronę nastawu.
@@ -12,3 +12,7 @@
 - [x] Usunięcie jest miękkie: znacznik usunięcia na nastawie, wpisy nie dostają własnego znacznika; w UI nie ma przywracania.
 - [x] Usunięty nastaw nie pojawia się na liście; jego strona, edycja oraz operacje na jego wpisach zwracają 404.
 - [x] Testy: edycja nastawu zmienia dane na liście i stronie; usunięty nastaw znika z listy; strona usuniętego nastawu zwraca 404; usunięcie bez poprawnego tokenu CSRF jest odrzucane.
+
+## Comments
+
+Zrealizowane na gałęzi integracyjnej `mvp` (wraz z poprawkami z code review, commit 672a295).

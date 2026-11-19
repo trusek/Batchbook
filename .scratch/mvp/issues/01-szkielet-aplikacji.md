@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 - [x] Symfony (webapp) z Doctrine ORM, migracjami i bazą SQLite.
 - [x] Twig, Symfony UX Turbo i Stimulus, Pico.css, AssetMapper, bez Node'a.
@@ -16,3 +16,7 @@
 - [x] Layout po polsku (`lang="pl"`), czytelny na telefonie.
 - [x] Test: przy pustej bazie ekran startowy pokazuje komunikat o braku nastawów i link do dodania nastawu.
 - [x] README z instrukcją uruchomienia aplikacji i testów.
+
+## Comments
+
+Zrealizowane na gałęzi integracyjnej `mvp` (wraz z poprawkami z code review, commit 672a295).
