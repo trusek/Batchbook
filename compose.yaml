@@ -1,0 +1,18 @@
+# Konfiguracja docelowa: jeden kontener FrankenPHP, baza SQLite na wolumenie.
+# Na serwerze: docker compose -f compose.yaml up -d --build
+# Lokalnie compose.override.yaml przełącza obraz na development z kodem z hosta.
+services:
+  app:
+    build:
+      context: .
+      target: prod
+    restart: unless-stopped
+    environment:
+      APP_SECRET: ${APP_SECRET:-zmien-mnie-na-serwerze}
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    volumes:
+      - db_data:/app/var/data
+
+volumes:
+  db_data:
