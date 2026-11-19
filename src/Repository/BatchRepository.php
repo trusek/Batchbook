@@ -22,6 +22,14 @@ class BatchRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * Zapisuje zmiany w nastawie już zarządzanym przez Doctrine (edycja, miękkie usunięcie).
+     */
+    public function save(Batch $batch): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     public function findVisible(int $id): ?Batch
     {
         return $this->findOneBy(['id' => $id, 'deletedAt' => null]);

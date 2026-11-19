@@ -95,4 +95,12 @@ class Batch
     {
         return $this->deletedAt;
     }
+
+    /**
+     * Miękkie usunięcie: nastaw znika z aplikacji razem z wpisami (wpisy nie dostają własnego znacznika).
+     */
+    public function markDeleted(\DateTimeImmutable $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
 }

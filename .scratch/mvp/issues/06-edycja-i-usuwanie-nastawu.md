@@ -6,9 +6,9 @@
 
 **Status:** ready-for-agent
 
-- [ ] Nagłówek strony nastawu ma akcje „Edytuj” i „Usuń”.
-- [ ] Edycja nastawu na osobnej stronie, z tymi samymi polami i walidacją co przy dodawaniu; po zapisie powrót na stronę nastawu.
-- [ ] Usunięcie nastawu wymaga potwierdzenia w przeglądarce i idzie przez POST z tokenem CSRF; po usunięciu powrót na ekran startowy.
-- [ ] Usunięcie jest miękkie: znacznik usunięcia na nastawie, wpisy nie dostają własnego znacznika; w UI nie ma przywracania.
-- [ ] Usunięty nastaw nie pojawia się na liście; jego strona, edycja oraz operacje na jego wpisach zwracają 404.
-- [ ] Testy: edycja nastawu zmienia dane na liście i stronie; usunięty nastaw znika z listy; strona usuniętego nastawu zwraca 404; usunięcie bez poprawnego tokenu CSRF jest odrzucane.
+- [x] Nagłówek strony nastawu ma akcje „Edytuj” i „Usuń”.
+- [x] Edycja nastawu na osobnej stronie, z tymi samymi polami i walidacją co przy dodawaniu; po zapisie powrót na stronę nastawu.
+- [x] Usunięcie nastawu wymaga potwierdzenia w przeglądarce i idzie przez POST z tokenem CSRF; po usunięciu powrót na ekran startowy.
+- [x] Usunięcie jest miękkie: znacznik usunięcia na nastawie, wpisy nie dostają własnego znacznika; w UI nie ma przywracania.
+- [x] Usunięty nastaw nie pojawia się na liście; jego strona, edycja oraz operacje na jego wpisach zwracają 404.
+- [x] Testy: edycja nastawu zmienia dane na liście i stronie; usunięty nastaw znika z listy; strona usuniętego nastawu zwraca 404; usunięcie bez poprawnego tokenu CSRF jest odrzucane.
