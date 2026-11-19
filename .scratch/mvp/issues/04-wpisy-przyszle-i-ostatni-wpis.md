@@ -6,9 +6,9 @@
 
 **Status:** ready-for-agent
 
-- [ ] Wpis z czasem późniejszym niż bieżący czas zegara ma w HTML znacznik wpisu przyszłego (klasa lub atrybut) i wyraźny styl.
-- [ ] Wpis na dziś na późniejszą godzinę jest przyszły, dopóki ta godzina nie minie; potem przestaje być wyróżniony bez żadnej akcji.
-- [ ] Ekran startowy pokazuje przy nastawie datę ostatniego wpisu (`dd.mm.rrrr HH:MM`): najpóźniejszy wpis nie późniejszy niż teraz.
-- [ ] Nastaw bez wpisów lub tylko z wpisami przyszłymi ma pustą datę ostatniego wpisu.
-- [ ] Test scenariusza 4: gdy dodam wpis z datą za 3 dni i notatką „sprawdzić Blg”, wtedy jest wyróżniony jako przyszły.
-- [ ] Testy: wpis dziś później niż teraz jest przyszły; po przesunięciu zegara za jego czas już nie jest; data ostatniego wpisu pomija wpisy przyszłe.
+- [x] Wpis z czasem późniejszym niż bieżący czas zegara ma w HTML znacznik wpisu przyszłego (klasa lub atrybut) i wyraźny styl.
+- [x] Wpis na dziś na późniejszą godzinę jest przyszły, dopóki ta godzina nie minie; potem przestaje być wyróżniony bez żadnej akcji.
+- [x] Ekran startowy pokazuje przy nastawie datę ostatniego wpisu (`dd.mm.rrrr HH:MM`): najpóźniejszy wpis nie późniejszy niż teraz.
+- [x] Nastaw bez wpisów lub tylko z wpisami przyszłymi ma pustą datę ostatniego wpisu.
+- [x] Test scenariusza 4: gdy dodam wpis z datą za 3 dni i notatką „sprawdzić Blg”, wtedy jest wyróżniony jako przyszły.
+- [x] Testy: wpis dziś później niż teraz jest przyszły; po przesunięciu zegara za jego czas już nie jest; data ostatniego wpisu pomija wpisy przyszłe.

@@ -23,10 +23,11 @@ final class BatchController extends AbstractController
     }
 
     #[Route('/', name: 'batch_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(EntryRepository $entries): Response
     {
         return $this->render('batch/index.html.twig', [
             'batches' => $this->batches->findForList(),
+            'last_entry_dates' => $entries->findLastEntryDates($this->clock->now()),
         ]);
     }
 

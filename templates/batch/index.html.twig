@@ -20,6 +20,7 @@
                         <th scope="col">Nazwa</th>
                         <th scope="col">Typ</th>
                         <th scope="col">Data rozpoczęcia</th>
+                        <th scope="col">Ostatni wpis</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,6 +29,7 @@
                             <td data-batch-name><a href="{{ path('batch_show', {id: batch.id}) }}">{{ batch.name }}</a></td>
                             <td data-batch-type>{{ batch.type.label }}</td>
                             <td data-batch-start-date>{{ batch.startDate ? batch.startDate|date('d.m.Y') : '' }}</td>
+                            <td data-batch-last-entry-at>{{ last_entry_dates[batch.id] is defined ? last_entry_dates[batch.id]|date('d.m.Y H:i') : '' }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

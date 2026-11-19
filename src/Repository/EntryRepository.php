@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Batch;
 use App\Entity\Entry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +22,32 @@ class EntryRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($entry);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * Data ostatniego wpisu każdego nastawu: najpóźniejszy czas nieusuniętego wpisu,
+     * który nie jest późniejszy niż $now (wpisy przyszłe się nie liczą).
+     * Nastawy bez takiego wpisu nie występują w wyniku.
+     *
+     * @return array<int, \DateTimeImmutable> id nastawu => data ostatniego wpisu
+     */
+    public function findLastEntryDates(\DateTimeImmutable $now): array
+    {
+        $rows = $this->createQueryBuilder('e')
+            ->select('IDENTITY(e.batch) AS batchId', 'MAX(e.occurredAt) AS lastEntryAt')
+            ->where('e.deletedAt IS NULL')
+            ->andWhere('e.occurredAt <= :now')
+            ->setParameter('now', $now, Types::DATETIME_IMMUTABLE)
+            ->groupBy('e.batch')
+            ->getQuery()
+            ->getArrayResult();
+
+        $dates = [];
+        foreach ($rows as $row) {
+            $dates[(int) $row['batchId']] = new \DateTimeImmutable($row['lastEntryAt']);
+        }
+
+        return $dates;
     }
 
     /**
