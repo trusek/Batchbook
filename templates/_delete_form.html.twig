@@ -1,0 +1,14 @@
+{#
+    Formularz usuwania: POST z tokenem CSRF (stateless id "delete") i potwierdzeniem w przeglądarce
+    (kontroler Stimulus "confirm"). Kontroler sprawdza token przez
+    $this->isCsrfTokenValid('delete', $request->getPayload()->getString('_csrf_token')).
+
+    Parametry: action (URL), message (treść pytania), label (tekst przycisku, domyślnie "Usuń").
+#}
+<form method="post" action="{{ action }}"
+      data-controller="confirm"
+      data-confirm-message-value="{{ message }}"
+      data-action="submit->confirm#ask">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete') }}" data-controller="csrf-protection">
+    <button type="submit" class="secondary">{{ label|default('Usuń') }}</button>
+</form>
