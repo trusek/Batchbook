@@ -1,0 +1,7 @@
+{# Jeden wpis w dzienniku. Samodzielny element (id="entry-<id>"), gotowy do owinięcia w Turbo Frame. #}
+<article id="entry-{{ entry.id }}" data-entry>
+    <header>
+        <time data-entry-occurred-at datetime="{{ entry.occurredAt|date('Y-m-d\\TH:i') }}">{{ entry.occurredAt|date('d.m.Y H:i') }}</time>
+    </header>
+    <p data-entry-note>{{ entry.note|nl2br }}</p>
+</article>

@@ -88,27 +88,4 @@ final class AddBatchTest extends AppWebTestCase
             $crawler->filter('select[name="batch[type]"] option')->each(static fn (Crawler $o): string => $o->text()),
         );
     }
-
-    private function addBatch(string $name, string $type, string $startDate, string $description = ''): void
-    {
-        $this->client->request('GET', '/nastawy/nowy');
-        $this->client->submitForm('Zapisz', [
-            'batch[name]' => $name,
-            'batch[type]' => $type,
-            'batch[startDate]' => $startDate,
-            'batch[description]' => $description,
-        ]);
-    }
-
-    /**
-     * @return list<array{string, string, string}> nazwa, typ, data rozpoczęcia
-     */
-    private function batchRows(Crawler $crawler): array
-    {
-        return $crawler->filter('[data-batch]')->each(static fn (Crawler $row): array => [
-            trim($row->filter('[data-batch-name]')->text()),
-            trim($row->filter('[data-batch-type]')->text()),
-            trim($row->filter('[data-batch-start-date]')->text()),
-        ]);
-    }
 }

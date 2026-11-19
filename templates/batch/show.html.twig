@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ batch.name }}{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>{{ batch.name }}</h1>
+        <p>
+            <span data-batch-type>{{ batch.type.label }}</span>
+            {% if batch.startDate %}
+                · rozpoczęty <span data-batch-start-date>{{ batch.startDate|date('d.m.Y') }}</span>
+            {% endif %}
+        </p>
+        {% if batch.description %}
+            <p data-batch-description>{{ batch.description|nl2br }}</p>
+        {% endif %}
+    </header>
+
+    <section aria-labelledby="new-entry-heading">
+        <h2 id="new-entry-heading">Nowy wpis</h2>
+        {{ form_start(entry_form) }}
+            {{ form_widget(entry_form) }}
+            <button type="submit">Dodaj wpis</button>
+        {{ form_end(entry_form) }}
+    </section>
+
+    <section aria-labelledby="journal-heading">
+        <h2 id="journal-heading">Dziennik</h2>
+        {% if entries is empty %}
+            <p>Brak wpisów.</p>
+        {% else %}
+            <div data-journal>
+                {% for entry in entries %}
+                    {{ include('entry/_entry.html.twig', {entry: entry}) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

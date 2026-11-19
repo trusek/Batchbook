@@ -25,7 +25,7 @@
                 <tbody>
                     {% for batch in batches %}
                         <tr data-batch>
-                            <td data-batch-name>{{ batch.name }}</td>
+                            <td data-batch-name><a href="{{ path('batch_show', {id: batch.id}) }}">{{ batch.name }}</a></td>
                             <td data-batch-type>{{ batch.type.label }}</td>
                             <td data-batch-start-date>{{ batch.startDate ? batch.startDate|date('d.m.Y') : '' }}</td>
                         </tr>

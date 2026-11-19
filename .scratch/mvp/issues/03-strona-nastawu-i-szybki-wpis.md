@@ -6,14 +6,14 @@
 
 **Status:** ready-for-agent
 
-- [ ] Pozycja na liście nastawów prowadzi do strony nastawu.
-- [ ] Strona nastawu pokazuje nazwę, typ, datę rozpoczęcia i opis (z zachowanymi podziałami linii).
-- [ ] Formularz wpisu: data z godziną (wymagana, dokładność do minuty) i notatka (wymagana, niepusta, wieloliniowa).
-- [ ] Domyślny czas w formularzu to bieżący czas z zegara zaokrąglony do minuty; pole notatki ma autofocus.
-- [ ] Wpis zapisuje datę utworzenia; czas wpisu to lokalny czas ścienny Europe/Warsaw.
-- [ ] Dziennik posortowany malejąco po czasie wpisu; przy równym czasie wyżej jest wpis dodany później.
-- [ ] Każdy wpis pokazuje czas w formacie `dd.mm.rrrr HH:MM` i notatkę z zachowanymi podziałami linii.
-- [ ] Test scenariusza 2: zakładając otwarty nastaw, gdy dodam wpis z bieżącym czasem i notatką „dodano 3 g pożywki”, wtedy wpis jest widoczny w dzienniku.
-- [ ] Test scenariusza 3: gdy dodam wpis z datą sprzed tygodnia, wtedy trafia we właściwe miejsce chronologicznie.
-- [ ] Test scenariusza 6: gdy dodam nastaw bez daty rozpoczęcia, wtedy mogę mimo to dodawać wpisy.
-- [ ] Testy: domyślny czas w formularzu równy czasowi zegara; pusta notatka odrzucana; kolejność wpisów o identycznym czasie.
+- [x] Pozycja na liście nastawów prowadzi do strony nastawu.
+- [x] Strona nastawu pokazuje nazwę, typ, datę rozpoczęcia i opis (z zachowanymi podziałami linii).
+- [x] Formularz wpisu: data z godziną (wymagana, dokładność do minuty) i notatka (wymagana, niepusta, wieloliniowa).
+- [x] Domyślny czas w formularzu to bieżący czas z zegara zaokrąglony do minuty; pole notatki ma autofocus.
+- [x] Wpis zapisuje datę utworzenia; czas wpisu to lokalny czas ścienny Europe/Warsaw.
+- [x] Dziennik posortowany malejąco po czasie wpisu; przy równym czasie wyżej jest wpis dodany później.
+- [x] Każdy wpis pokazuje czas w formacie `dd.mm.rrrr HH:MM` i notatkę z zachowanymi podziałami linii.
+- [x] Test scenariusza 2: zakładając otwarty nastaw, gdy dodam wpis z bieżącym czasem i notatką „dodano 3 g pożywki”, wtedy wpis jest widoczny w dzienniku.
+- [x] Test scenariusza 3: gdy dodam wpis z datą sprzed tygodnia, wtedy trafia we właściwe miejsce chronologicznie.
+- [x] Test scenariusza 6: gdy dodam nastaw bez daty rozpoczęcia, wtedy mogę mimo to dodawać wpisy.
+- [x] Testy: domyślny czas w formularzu równy czasowi zegara; pusta notatka odrzucana; kolejność wpisów o identycznym czasie.

@@ -22,6 +22,11 @@ class BatchRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function findVisible(int $id): ?Batch
+    {
+        return $this->findOneBy(['id' => $id, 'deletedAt' => null]);
+    }
+
     /**
      * Nieusunięte nastawy od najnowszych: po dacie rozpoczęcia, a gdy jej brak, po dacie utworzenia.
      *
