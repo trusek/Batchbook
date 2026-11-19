@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nastawy{% endblock %}
+
+{% block body %}
+    <h1>Nastawy</h1>
+
+    {% if batches is empty %}
+        <article>
+            <p>Nie ma jeszcze żadnych nastawów.</p>
+            {# TODO(02): link do formularza nowego nastawu #}
+            <a href="#" role="button">Dodaj nastaw</a>
+        </article>
+    {% endif %}
+{% endblock %}
