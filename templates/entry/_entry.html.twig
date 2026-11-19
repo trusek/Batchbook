@@ -1,7 +1,9 @@
 {# Jeden wpis w dzienniku. Samodzielny element (id="entry-<id>"), gotowy do owinięcia w Turbo Frame. #}
-<article id="entry-{{ entry.id }}" data-entry>
+{% set future = entry is future %}
+<article id="entry-{{ entry.id }}" data-entry{% if future %} data-entry-future class="entry-future"{% endif %}>
     <header>
         <time data-entry-occurred-at datetime="{{ entry.occurredAt|date('Y-m-d\\TH:i') }}">{{ entry.occurredAt|date('d.m.Y H:i') }}</time>
+        {% if future %}<small>· zaplanowany</small>{% endif %}
     </header>
     <p data-entry-note>{{ entry.note|nl2br }}</p>
 </article>

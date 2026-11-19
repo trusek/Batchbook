@@ -1,1 +1,12 @@
 /* Własne style aplikacji, nakładane na Pico.css. */
+
+/* Wpis przyszły (plan): przerywana ramka w kolorze akcentu i lekko przyciemnione tło. */
+.entry-future {
+    border: 2px dashed var(--pico-primary);
+    background-color: color-mix(in srgb, var(--pico-primary) 8%, var(--pico-card-background-color));
+}
+
+.entry-future > header small {
+    color: var(--pico-primary);
+    font-weight: bold;
+}
