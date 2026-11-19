@@ -3,6 +3,7 @@
 # Lokalnie compose.override.yaml przełącza obraz na development z kodem z hosta.
 services:
   app:
+    image: dziennik-nastawow:prod
     build:
       context: .
       target: prod
