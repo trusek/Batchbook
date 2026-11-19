@@ -8,8 +8,30 @@
     {% if batches is empty %}
         <article>
             <p>Nie ma jeszcze żadnych nastawów.</p>
-            {# TODO(02): link do formularza nowego nastawu #}
-            <a href="#" role="button">Dodaj nastaw</a>
+            <a href="{{ path('batch_new') }}" role="button">Dodaj nastaw</a>
         </article>
+    {% else %}
+        <p><a href="{{ path('batch_new') }}" role="button">Dodaj nastaw</a></p>
+
+        <div class="overflow-auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Nazwa</th>
+                        <th scope="col">Typ</th>
+                        <th scope="col">Data rozpoczęcia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for batch in batches %}
+                        <tr data-batch>
+                            <td data-batch-name>{{ batch.name }}</td>
+                            <td data-batch-type>{{ batch.type.label }}</td>
+                            <td data-batch-start-date>{{ batch.startDate ? batch.startDate|date('d.m.Y') : '' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% endif %}
 {% endblock %}

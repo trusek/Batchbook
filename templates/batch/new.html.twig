@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nowy nastaw{% endblock %}
+
+{% block body %}
+    <h1>Nowy nastaw</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Zapisz</button>
+        <a href="{{ path('batch_index') }}">Anuluj</a>
+    {{ form_end(form) }}
+{% endblock %}
