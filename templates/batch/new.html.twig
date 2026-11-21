@@ -3,11 +3,5 @@
 {% block title %}Nowy nastaw{% endblock %}
 
 {% block body %}
-    <h1>Nowy nastaw</h1>
-
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit">Zapisz</button>
-        <a href="{{ path('batch_index') }}">Anuluj</a>
-    {{ form_end(form) }}
+    {{ include('batch/_form.html.twig', {form: form, heading: 'Nowy nastaw', cancel: path('dashboard')}, with_context = false) }}
 {% endblock %}

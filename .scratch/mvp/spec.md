@@ -106,16 +106,20 @@ Prosta aplikacja webowa działająca w sieci domowej (bez logowania, dostęp tyl
 - Usunięcie wymaga potwierdzenia w przeglądarce (kontroler Stimulus albo natywne `confirm`) i idzie przez POST z tokenem CSRF.
 
 **Ekrany i interakcje**
-- Ekran startowy pokazuje listę nastawów. Każda pozycja ma nazwę, etykietę typu, datę rozpoczęcia i datę ostatniego wpisu. Sortowanie malejące po dacie rozpoczęcia, a gdy jej brak, po dacie utworzenia. Przy pustej liście wyświetla się komunikat i link do dodania nastawu.
-- Nastaw dodaje się i edytuje na osobnej stronie z formularzem.
+- Układ „Notatnik” (zgłoszenie 07): na każdej stronie pasek boczny z listą nastawów i link „+ Nowy nastaw”, obok treść ograniczona do ok. 60rem. Poniżej ok. 800px pasek jest nad treścią (lista przewijana poziomo).
+- **Lista nastawów żyje w pasku bocznym.** Każda pozycja ma nazwę, typ słowem (z ozdobną kolorową kropką), datę rozpoczęcia, datę ostatniego wpisu i, jeśli jest, najbliższy plan (najwcześniejszy nieusunięty wpis przyszły). Sortowanie malejące po dacie rozpoczęcia, a gdy jej brak, po dacie utworzenia; bez usuniętych. Otwarty nastaw jest zaznaczony. Dane paska liczone zbiorczo (bez zapytań N+1).
+- **Daty w pasku bocznym są względne**, liczone dniami kalendarzowymi od dzisiejszej daty z zegara: „dzień 25” (od daty rozpoczęcia, dzień startu = dzień 1), „start za 3 dni” / „start jutro”, „bez daty startu”, „dziś”, „wczoraj”, „3 dni temu”, „brak wpisów”, „plan dziś” / „plan jutro” / „plan za 4 dni”. Każda w `<time datetime="…" title="dd.mm.rrrr[ HH:MM]">`, żeby pełna data była dostępna.
+- **Ekran startowy to pulpit** (świadome rozszerzenie historyjki 14, bo lista jest zawsze w pasku): dwie kolumny „Najbliższe plany” (do 10 wpisów przyszłych ze wszystkich nastawów, rosnąco) i „Ostatnia aktywność” (do 15 wpisów nie późniejszych niż teraz, malejąco), każdy wpis z pełną datą, datą względną, nazwą nastawu jako linkiem i notatką. Pomija usunięte wpisy i wpisy usuniętych nastawów. Przy braku nastawów wyświetla się komunikat i link do dodania nastawu.
+- Nastaw dodaje się i edytuje na osobnej stronie ze zwartym formularzem (nazwa i typ w jednym rzędzie). „Usuń nastaw” jest wyłącznie na dole strony edycji.
 - Strona nastawu pokazuje kolejno:
-  - nagłówek z danymi nastawu i akcjami edycji i usunięcia,
-  - formularz szybkiego wpisu z czasem domyślnie ustawionym na „teraz” (z zegara, zaokrąglonym do minuty) i autofocusem w polu notatki,
-  - dziennik.
-- Dziennik jest posortowany malejąco po czasie wpisu. Przy równym czasie wpisy układa kolejność dodania, z późniejszym dodaniem wyżej. Wpisy przyszłe mają wyróżniający znacznik w HTML-u (klasę lub atrybut) oraz wyraźny styl.
-- Wpis edytuje się w miejscu przez Turbo Frame. Kliknięcie „Edytuj” zamienia wpis na formularz, a zapis odświeża dziennik, żeby wpis trafił na właściwą pozycję.
-- Błędy walidacji formularzy wyświetlają się przy polach. Turbo wymaga odpowiedzi 422.
-- Daty i godziny w widokach mają format `dd.mm.rrrr HH:MM`, a data rozpoczęcia nastawu format `dd.mm.rrrr`.
+  - nagłówek z nazwą, ołówkiem „Edytuj nastaw”, typem, datą rozpoczęcia (z dniem nastawu) i liczbą wpisów; opis w rozwijanym „Opis / przepis”,
+  - dziennik jako arkusz z kolumnami Kiedy | Notatka, którego pierwszy wiersz to formularz szybkiego wpisu (data, notatka, „Dodaj”) z czasem domyślnie ustawionym na „teraz” (z zegara, zaokrąglonym do minuty) i autofocusem w polu notatki,
+  - wiersze dziennika.
+- Dziennik jest posortowany malejąco po czasie wpisu. Przy równym czasie wpisy układa kolejność dodania, z późniejszym dodaniem wyżej. Wpisy przyszłe mają wyróżniający znacznik w HTML-u (klasę lub atrybut), wyraźny styl i etykietę „plan”.
+- Wpis edytuje się w miejscu przez Turbo Frame. Ołówek przy dacie wpisu zamienia wiersz na formularz z „Zapisz”, „Anuluj” i „Usuń wpis” (usuwanie wpisu jest tylko tutaj); zapis lub usunięcie odświeża dziennik, żeby wpis trafił na właściwą pozycję.
+- Błędy walidacji formularzy wyświetlają się przy polach (z `aria-invalid` i `aria-describedby`). Turbo wymaga odpowiedzi 422.
+- Dostępność: WCAG 2.2 AA (kontrasty pól i kolorów typów w obu motywach, widoczny fokus, link „Przejdź do treści”, etykiety pól — w dzienniku ukryte wizualnie, ikony z nazwą dostępną, cele kliknięcia ≥ 24×24 px, typ nie tylko kolorem, bez emoji).
+- Daty i godziny w dzienniku i na pulpicie mają format `dd.mm.rrrr HH:MM`, a data rozpoczęcia nastawu na jego stronie format `dd.mm.rrrr`; w pasku bocznym są daty względne (wyżej).
 
 ## Testing Decisions
 

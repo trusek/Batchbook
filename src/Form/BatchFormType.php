@@ -38,7 +38,7 @@ final class BatchFormType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'Opis',
                 'required' => false,
-                'attr' => ['rows' => 6],
+                'attr' => ['rows' => 4],
             ]);
     }
 

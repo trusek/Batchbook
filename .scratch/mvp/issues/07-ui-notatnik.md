@@ -31,13 +31,13 @@
 
 ## Kryteria
 
-- [ ] Wszystkie strony mają układ C; pasek boczny na każdej stronie; brak `?variant`, przełącznika i kodu `proto_*`.
-- [ ] Pulpit: najbliższe plany i ostatnia aktywność ze wszystkich nieusuniętych nastawów (bez usuniętych wpisów i wpisów usuniętych nastawów); pusty stan z linkiem.
-- [ ] Pasek boczny: kolejność i filtrowanie jak w specu; typ słowem; daty względne w `<time>` z pełną datą w `datetime`/`title`; „data ostatniego wpisu” liczona jak w specu (bez przyszłych i usuniętych).
-- [ ] Bez zapytań N+1 dla paska bocznego (najbliższy plan i ostatni wpis zbiorczo).
-- [ ] Usuwanie nastawu tylko na stronie edycji; usuwanie wpisu tylko w edycji wpisu; nadal POST + CSRF + potwierdzenie, miękko; zachowanie 404/403 bez zmian.
-- [ ] Wymagania dostępności powyżej.
-- [ ] Testy (HTTP, `WebTestCase`) przepisane pod nowy układ, a wszystkie dotychczasowe zachowania nadal pokryte; nowe testy: pulpit (plany/aktywność, bez usuniętych), daty względne w pasku bocznym przy ustawionym zegarze, usuwanie dostępne tylko w edycji, pola formularzy mają etykiety, `aria-invalid` przy błędzie.
-- [ ] Spec zaktualizowany w sekcji „Ekrany i interakcje” (ekran startowy = pulpit, lista w pasku bocznym, daty względne w pasku).
+- [x] Wszystkie strony mają układ C; pasek boczny na każdej stronie; brak `?variant`, przełącznika i kodu `proto_*`.
+- [x] Pulpit: najbliższe plany i ostatnia aktywność ze wszystkich nieusuniętych nastawów (bez usuniętych wpisów i wpisów usuniętych nastawów); pusty stan z linkiem.
+- [x] Pasek boczny: kolejność i filtrowanie jak w specu; typ słowem; daty względne w `<time>` z pełną datą w `datetime`/`title`; „data ostatniego wpisu” liczona jak w specu (bez przyszłych i usuniętych).
+- [x] Bez zapytań N+1 dla paska bocznego (najbliższy plan i ostatni wpis zbiorczo).
+- [x] Usuwanie nastawu tylko na stronie edycji; usuwanie wpisu tylko w edycji wpisu; nadal POST + CSRF + potwierdzenie, miękko; zachowanie 404/403 bez zmian.
+- [x] Wymagania dostępności powyżej.
+- [x] Testy (HTTP, `WebTestCase`) przepisane pod nowy układ, a wszystkie dotychczasowe zachowania nadal pokryte; nowe testy: pulpit (plany/aktywność, bez usuniętych), daty względne w pasku bocznym przy ustawionym zegarze, usuwanie dostępne tylko w edycji, pola formularzy mają etykiety, `aria-invalid` przy błędzie.
+- [x] Spec zaktualizowany w sekcji „Ekrany i interakcje” (ekran startowy = pulpit, lista w pasku bocznym, daty względne w pasku).
 
 ## Comments

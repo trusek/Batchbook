@@ -3,11 +3,5 @@
 {% block title %}Edycja: {{ batch.name }}{% endblock %}
 
 {% block body %}
-    <h1>Edycja nastawu</h1>
-
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit">Zapisz</button>
-        <a href="{{ path('batch_show', {id: batch.id}) }}">Anuluj</a>
-    {{ form_end(form) }}
+    {{ include('batch/_form.html.twig', {form: form, heading: 'Edycja nastawu', cancel: path('batch_show', {id: batch.id}), batch: batch}) }}
 {% endblock %}

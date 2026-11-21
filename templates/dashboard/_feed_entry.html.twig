@@ -1,0 +1,16 @@
+{#
+    Wpis na pulpicie: pełna data z datą względną pod spodem, nastaw (link) z typem słowem i notatka.
+    Parametry: entry, future (wpis przyszły: wyróżniony jak plan).
+#}
+{% set batch = entry.batch %}
+<li data-feed-entry{% if future %} class="is-future"{% endif %}>
+    <time datetime="{{ entry.occurredAt|date('Y-m-d\\TH:i') }}">
+        <span data-feed-occurred-at>{{ entry.occurredAt|date('d.m.Y H:i') }}</span>
+        <small>{{ entry.occurredAt|relative_day }}</small>
+    </time>
+    <div>
+        <a href="{{ path('batch_show', {id: batch.id}) }}" data-feed-batch><span class="type-dot type-{{ batch.type.value }}" aria-hidden="true"></span>{{ batch.name }}</a>
+        <small class="muted">· {{ batch.type.label }}</small>
+        <p data-feed-note>{{ entry.note|nl2br }}</p>
+    </div>
+</li>

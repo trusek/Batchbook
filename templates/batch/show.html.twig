@@ -3,53 +3,58 @@
 {% block title %}{{ batch.name }}{% endblock %}
 
 {% block body %}
-    <header>
-        <h1>{{ batch.name }}</h1>
-        <p>
-            <span data-batch-type>{{ batch.type.label }}</span>
+    <header class="batch-head">
+        {# Rzadkie akcje schowane: tu tylko ołówek, „Usuń nastaw” jest na dole strony edycji. #}
+        <h1>{{ batch.name }} <a class="icon-link" href="{{ path('batch_edit', {id: batch.id}) }}" title="Edytuj nastaw">{{ include('_pencil.html.twig') }}<span class="sr-only">Edytuj nastaw</span></a></h1>
+        <p class="batch-meta">
+            <span class="batch-type type-{{ batch.type.value }}" data-batch-type>{{ batch.type.label }}</span>
             {% if batch.startDate %}
-                · rozpoczęty <span data-batch-start-date>{{ batch.startDate|date('d.m.Y') }}</span>
+                · start <time data-batch-start-date datetime="{{ batch.startDate|date('Y-m-d') }}">{{ batch.startDate|date('d.m.Y') }}</time> ({{ batch.startDate|batch_day }})
+            {% else %}
+                · bez daty startu
             {% endif %}
+            {% set count = entries|length %}
+            · {{ count }} {{ count == 1 ? 'wpis' : (count % 10 in 2..4 and count % 100 not in 12..14 ? 'wpisy' : 'wpisów') }}
         </p>
-        {% if batch.description %}
-            <p data-batch-description>{{ batch.description|nl2br }}</p>
-        {% endif %}
-        <nav aria-label="Akcje nastawu">
-            <ul>
-                <li><a href="{{ path('batch_edit', {id: batch.id}) }}">Edytuj</a></li>
-                <li>{{ include('_delete_form.html.twig', {
-                    action: path('batch_delete', {id: batch.id}),
-                    message: 'Usunąć nastaw „' ~ batch.name ~ '” razem z wpisami?',
-                }) }}</li>
-            </ul>
-        </nav>
     </header>
 
-    <section aria-labelledby="new-entry-heading">
-        <h2 id="new-entry-heading">Nowy wpis</h2>
-        {{ form_start(entry_form) }}
-            {{ form_widget(entry_form) }}
-            <button type="submit">Dodaj wpis</button>
-        {{ form_end(entry_form) }}
-    </section>
+    {% if batch.description %}
+        <details class="batch-description" open>
+            <summary>Opis / przepis</summary>
+            <p data-batch-description>{{ batch.description|nl2br }}</p>
+        </details>
+    {% endif %}
 
-    <section aria-labelledby="journal-heading">
-        <h2 id="journal-heading">Dziennik</h2>
+    {#
+        Dziennik jako arkusz: kolumny Kiedy | Notatka. Pierwszy wiersz to formularz szybkiego wpisu.
+        Bez role="table": nagłówki kolumn są tylko wizualne, czytniki dostają etykiety pól i nagłówki sekcji.
+    #}
+    <div class="log">
+        <div class="log-row log-head" aria-hidden="true">
+            <span>Kiedy</span><span>Notatka</span>
+        </div>
+
+        <h2 class="sr-only">Nowy wpis</h2>
+        {{ form_start(entry_form, {attr: {class: 'log-row log-new'}}) }}
+            <div>{{ include('form/_compact_field.html.twig', {field: entry_form.occurredAt, label: 'Data i godzina wpisu'}) }}</div>
+            <div class="new-note">
+                <div class="grow">{{ include('form/_compact_field.html.twig', {field: entry_form.note, label: 'Notatka', attr: {rows: 1, placeholder: 'Co się wydarzyło?'}}) }}</div>
+                <button type="submit">Dodaj</button>
+            </div>
+        {{ form_end(entry_form) }}
+
+        <h2 class="sr-only">Dziennik</h2>
         {# Ramka "journal": cel zapisu edycji i usunięcia wpisu, żeby dziennik odświeżał się w całości. #}
         <turbo-frame id="journal">
-            {% if entries is empty %}
-                <p>Brak wpisów.</p>
+            {% for entry in entries %}
+                {% if edit_form is defined and entry is same as(edited_entry) %}
+                    {{ include('entry/_edit_form.html.twig', {entry: entry, form: edit_form}) }}
+                {% else %}
+                    {{ include('entry/_entry.html.twig', {entry: entry}) }}
+                {% endif %}
             {% else %}
-                <div data-journal>
-                    {% for entry in entries %}
-                        {% if edit_form is defined and entry is same as(edited_entry) %}
-                            {{ include('entry/_edit_form.html.twig', {entry: entry, form: edit_form}) }}
-                        {% else %}
-                            {{ include('entry/_entry.html.twig', {entry: entry}) }}
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            {% endif %}
+                <p class="muted log-empty">Brak wpisów.</p>
+            {% endfor %}
         </turbo-frame>
-    </section>
+    </div>
 {% endblock %}

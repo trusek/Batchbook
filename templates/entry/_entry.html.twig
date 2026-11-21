@@ -1,22 +1,17 @@
 {#
-    Jeden wpis w dzienniku, w ramce Turbo "entry-<id>". „Edytuj” ładuje do tej ramki formularz
-    (entry/_edit_form.html.twig); „Usuń” odświeża ramkę "journal" ze strony nastawu.
+    Jeden wiersz dziennika w ramce Turbo "entry-<id>": kiedy | notatka. Ołówek ładuje do tej ramki
+    formularz edycji (entry/_edit_form.html.twig), w którym jest też rzadko używane „Usuń wpis”.
+    Wpis przyszły ma znacznik data-entry-future, klasę is-future i etykietę „plan”.
 #}
 {% set future = entry is future %}
+{% set when = entry.occurredAt|date('d.m.Y H:i') %}
 <turbo-frame id="entry-{{ entry.id }}">
-    <article data-entry{% if future %} data-entry-future class="entry-future"{% endif %}>
-        <header>
-            <time data-entry-occurred-at datetime="{{ entry.occurredAt|date('Y-m-d\\TH:i') }}">{{ entry.occurredAt|date('d.m.Y H:i') }}</time>
-            {% if future %}<small>· zaplanowany</small>{% endif %}
-        </header>
-        <p data-entry-note>{{ entry.note|nl2br }}</p>
-        <footer class="entry-actions">
-            <a href="{{ path('entry_edit', {id: entry.id}) }}">Edytuj</a>
-            {{ include('_delete_form.html.twig', {
-                action: path('entry_delete', {id: entry.id}),
-                message: 'Usunąć ten wpis?',
-                frame: 'journal',
-            }) }}
-        </footer>
-    </article>
+    <div class="log-row{{ future ? ' is-future' }}" data-entry{% if future %} data-entry-future{% endif %}>
+        <div class="when">
+            <time data-entry-occurred-at datetime="{{ entry.occurredAt|date('Y-m-d\\TH:i') }}">{{ when }}</time>
+            {% if future %}<span class="plan-tag">plan</span>{% endif %}
+            <a class="icon-link" href="{{ path('entry_edit', {id: entry.id}) }}" title="Edytuj wpis">{{ include('_pencil.html.twig') }}<span class="sr-only">Edytuj wpis z {{ when }}</span></a>
+        </div>
+        <div data-entry-note>{{ entry.note|nl2br }}</div>
+    </div>
 </turbo-frame>

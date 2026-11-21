@@ -36,7 +36,7 @@ final class EditEntryTest extends AppWebTestCase
         $response = $this->openEntryEdit('zlano znad osadu');
 
         self::assertResponseIsSuccessful();
-        $form = $response->filter(sprintf('turbo-frame[id="%s"] form', $frameId));
+        $form = $response->filter(sprintf('turbo-frame[id="%s"] form[name="entry_edit"]', $frameId));
         self::assertCount(1, $form, 'Formularz edycji powinien być w ramce wpisu.');
         self::assertSame('2026-03-14T10:00', $form->filter('[name="entry_edit[occurredAt]"]')->attr('value'));
         self::assertSame('zlano znad osadu', $form->filter('[name="entry_edit[note]"]')->text());
@@ -113,9 +113,9 @@ final class EditEntryTest extends AppWebTestCase
         $this->addBatch('Pomyłka');
         $this->openBatch('Pomyłka');
         $this->addEntry('wpis');
-        $editUrl = $this->entryWithNote($this->client->getCrawler(), 'wpis')->selectLink('Edytuj')->link()->getUri();
+        $editUrl = $this->entryWithNote($this->client->getCrawler(), 'wpis')->selectLink('Edytuj wpis')->link()->getUri();
 
-        $this->client->submitForm('Usuń');
+        $this->deleteBatch('Pomyłka');
 
         $this->client->request('GET', $editUrl);
         self::assertResponseStatusCodeSame(404);

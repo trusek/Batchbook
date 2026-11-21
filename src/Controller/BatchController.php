@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Batch;
 use App\Form\BatchFormType;
 use App\Repository\BatchRepository;
-use App\Repository\EntryRepository;
 use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,15 +19,6 @@ final class BatchController extends AbstractController
     ) {
     }
 
-    #[Route('/', name: 'batch_index', methods: ['GET'])]
-    public function index(EntryRepository $entries): Response
-    {
-        return $this->render('batch/index.html.twig', [
-            'batches' => $this->batches->findForList(),
-            'last_entry_dates' => $entries->findLastEntryDates($this->clock->now()),
-        ]);
-    }
-
     #[Route('/nastawy/nowy', name: 'batch_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
@@ -39,7 +29,7 @@ final class BatchController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->batches->save($batch);
 
-            return $this->redirectToRoute('batch_index', status: Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('dashboard', status: Response::HTTP_SEE_OTHER);
         }
 
         // render() ustawia 422 dla nieprawidłowego formularza (wymóg Turbo).
@@ -92,6 +82,6 @@ final class BatchController extends AbstractController
         $batch->markDeleted($this->clock->now());
         $this->batches->save($batch);
 
-        return $this->redirectToRoute('batch_index', status: Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('dashboard', status: Response::HTTP_SEE_OTHER);
     }
 }

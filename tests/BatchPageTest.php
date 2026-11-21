@@ -13,8 +13,8 @@ final class BatchPageTest extends AppWebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', 'Miód z lipy');
-        self::assertSelectorTextContains('[data-batch-type]', 'Wino');
-        self::assertSelectorTextContains('[data-batch-start-date]', '10.03.2026');
+        self::assertSelectorTextContains('main [data-batch-type]', 'Wino');
+        self::assertSelectorTextContains('main [data-batch-start-date]', '10.03.2026');
         $description = $this->client->getCrawler()->filter('[data-batch-description]')->html();
         self::assertMatchesRegularExpression('#Miód lipowy 3 kg<br\s*/?>\s*Woda 6 l#', $description);
         self::assertSelectorTextNotContains('main', 'Inny nastaw');

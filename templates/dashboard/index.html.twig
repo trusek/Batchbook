@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pulpit{% endblock %}
+
+{% block body %}
+    {% if not has_batches %}
+        <div class="blank">
+            <h1>Zacznij dziennik</h1>
+            <p>Nie ma jeszcze żadnych nastawów.</p>
+            <a href="{{ path('batch_new') }}" role="button">Dodaj nastaw</a>
+        </div>
+    {% else %}
+        <h1>Pulpit</h1>
+        <div class="columns">
+            <section>
+                <h2>Najbliższe plany</h2>
+                <ul class="feed">
+                    {% for entry in upcoming %}
+                        {{ include('dashboard/_feed_entry.html.twig', {entry: entry, future: true}) }}
+                    {% else %}
+                        <li class="muted">Nic nie zaplanowano.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            <section>
+                <h2>Ostatnia aktywność</h2>
+                <ul class="feed">
+                    {% for entry in recent %}
+                        {{ include('dashboard/_feed_entry.html.twig', {entry: entry, future: false}) }}
+                    {% else %}
+                        <li class="muted">Jeszcze nic się nie wydarzyło.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+    {% endif %}
+{% endblock %}

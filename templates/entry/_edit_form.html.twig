@@ -1,15 +1,30 @@
 {#
-    Formularz edycji wpisu w miejscu wpisu (ta sama ramka "entry-<id>").
-    Wysyła się do ramki "journal": po zapisie odświeża się cały dziennik, więc wpis trafia na właściwe miejsce.
+    Edycja wpisu w miejscu wpisu (ta sama ramka "entry-<id>"): data, notatka oraz Zapisz / Anuluj / Usuń wpis.
+    Formularz i „Usuń wpis” wysyłają się do ramki "journal": po zapisie lub usunięciu odświeża się cały
+    dziennik, więc wpis trafia na właściwe miejsce. „Usuń wpis” to osobny formularz (formularzy nie można
+    zagnieżdżać), dlatego „Zapisz” wskazuje swój formularz atrybutem form.
 #}
+{% set form_id = 'entry-edit-' ~ entry.id %}
 <turbo-frame id="entry-{{ entry.id }}">
-    <article data-entry-edit>
-        {{ form_start(form, {attr: {'data-turbo-frame': 'journal'}}) }}
-            {{ form_widget(form) }}
-            <div class="entry-actions">
-                <button type="submit">Zapisz</button>
-                <a href="{{ path('batch_show', {id: entry.batch.id}) }}">Anuluj</a>
+    <div class="log-row log-edit" data-entry-edit role="group" aria-label="Edycja wpisu z {{ entry.occurredAt|date('d.m.Y H:i') }}">
+        {{ form_start(form, {attr: {'data-turbo-frame': 'journal', id: form_id}}) }}
+            <div class="edit-grid">
+                <div>{{ include('form/_compact_field.html.twig', {field: form.occurredAt, label: 'Data i godzina wpisu'}) }}</div>
+                <div>{{ include('form/_compact_field.html.twig', {field: form.note, label: 'Notatka', attr: {rows: 2}}) }}</div>
             </div>
+            {{ form_rest(form) }}
         {{ form_end(form) }}
-    </article>
+        <div class="edit-actions">
+            <button type="submit" form="{{ form_id }}">Zapisz</button>
+            <a href="{{ path('batch_show', {id: entry.batch.id}) }}">Anuluj</a>
+            <span class="danger">
+                {{ include('_delete_form.html.twig', {
+                    action: path('entry_delete', {id: entry.id}),
+                    message: 'Usunąć ten wpis?',
+                    label: 'Usuń wpis',
+                    frame: 'journal',
+                }) }}
+            </span>
+        </div>
+    </div>
 </turbo-frame>

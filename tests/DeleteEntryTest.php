@@ -2,6 +2,8 @@
 
 namespace App\Tests;
 
+use Symfony\Component\DomCrawler\Form;
+
 final class DeleteEntryTest extends AppWebTestCase
 {
     /**
@@ -25,13 +27,30 @@ final class DeleteEntryTest extends AppWebTestCase
         ], $this->journal($this->client->followRedirect()));
     }
 
+    public function testDeleteIsOfferedOnlyInEntryEditNextToSaveAndCancel(): void
+    {
+        $this->addBatch('Wino z aronii');
+        $this->openBatch('Wino z aronii');
+        $page = $this->addEntry('pomyłka');
+
+        self::assertCount(0, $page->filter('main form[action$="/usun"]'), 'Wiersz dziennika nie ma przycisku usuwania.');
+
+        $edit = $this->openEntryEdit('pomyłka');
+        $frameId = $this->entryWithNote($page, 'pomyłka')->closest('turbo-frame')?->attr('id');
+        $frame = $edit->filter(sprintf('turbo-frame[id="%s"]', $frameId));
+
+        self::assertCount(1, $frame->selectButton('Usuń wpis'));
+        self::assertCount(1, $frame->selectButton('Zapisz'));
+        self::assertCount(1, $frame->selectLink('Anuluj'));
+    }
+
     public function testDeleteButtonAsksForConfirmationAndRefreshesJournal(): void
     {
         $this->addBatch('Wino z aronii');
         $this->openBatch('Wino z aronii');
         $page = $this->addEntry('pomyłka');
 
-        $form = $this->entryWithNote($page, 'pomyłka')->selectButton('Usuń')->form();
+        $form = $this->entryDeleteForm('pomyłka');
 
         self::assertSame('post', strtolower($form->getMethod()));
         $formNode = $form->getFormNode();
@@ -74,8 +93,8 @@ final class DeleteEntryTest extends AppWebTestCase
     {
         $this->addBatch('Wino z aronii');
         $this->openBatch('Wino z aronii');
-        $page = $this->addEntry('ważny wpis');
-        $deleteUrl = $this->entryWithNote($page, 'ważny wpis')->selectButton('Usuń')->form()->getUri();
+        $this->addEntry('ważny wpis');
+        $deleteUrl = $this->entryDeleteForm('ważny wpis')->getUri();
 
         $this->client->request('POST', $deleteUrl);
 
@@ -88,11 +107,10 @@ final class DeleteEntryTest extends AppWebTestCase
         $this->addBatch('Wino z aronii');
         $this->openBatch('Wino z aronii');
         $page = $this->addEntry('pomyłka');
-        $entry = $this->entryWithNote($page, 'pomyłka');
-        $editUrl = $entry->selectLink('Edytuj')->link()->getUri();
-        $deleteForm = $entry->selectButton('Usuń')->form();
+        $editUrl = $this->entryWithNote($page, 'pomyłka')->selectLink('Edytuj wpis')->link()->getUri();
+        $deleteForm = $this->entryDeleteForm('pomyłka');
 
-        $this->deleteEntry('pomyłka');
+        $this->client->submit($deleteForm);
 
         $this->client->request('GET', $editUrl);
         self::assertResponseStatusCodeSame(404);
@@ -106,12 +124,20 @@ final class DeleteEntryTest extends AppWebTestCase
     {
         $this->addBatch('Pomyłka');
         $this->openBatch('Pomyłka');
-        $page = $this->addEntry('wpis');
-        $deleteForm = $this->entryWithNote($page, 'wpis')->selectButton('Usuń')->form();
+        $this->addEntry('wpis');
+        $deleteForm = $this->entryDeleteForm('wpis');
 
-        $this->client->submitForm('Usuń');
+        $this->deleteBatch('Pomyłka');
 
         $this->client->submit($deleteForm);
         self::assertResponseStatusCodeSame(404);
+    }
+
+    /**
+     * Formularz „Usuń wpis” z edycji wpisu o podanej notatce (na aktualnie otwartej stronie nastawu).
+     */
+    private function entryDeleteForm(string $note): Form
+    {
+        return $this->openEntryEdit($note)->selectButton('Usuń wpis')->form();
     }
 }

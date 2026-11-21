@@ -1,0 +1,34 @@
+{#
+    Zwarty formularz nastawu (nowy i edycja): nazwa i typ w jednym rzędzie, wąska data, opis, przyciski obok siebie.
+    Parametry: form, heading, cancel (URL „Anuluj”), batch (opcjonalnie, przy edycji: na dole „Usuń nastaw”).
+#}
+<div class="batch-form">
+    <h1>{{ heading }}</h1>
+    {{ form_start(form) }}
+        <div class="form-row form-row-name">
+            {{ form_row(form.name) }}
+            {{ form_row(form.type) }}
+        </div>
+        <div class="form-row form-row-date">
+            {{ form_row(form.startDate) }}
+        </div>
+        {{ form_row(form.description) }}
+        {{ form_rest(form) }}
+        <div class="form-actions">
+            <button type="submit">Zapisz</button>
+            <a href="{{ cancel }}">Anuluj</a>
+        </div>
+    {{ form_end(form) }}
+
+    {# Usuwanie nastawu jest rzadkie: tylko tutaj, na końcu strony edycji. #}
+    {% if batch is defined %}
+        <div class="danger danger-zone">
+            {{ include('_delete_form.html.twig', {
+                action: path('batch_delete', {id: batch.id}),
+                message: 'Usunąć nastaw „' ~ batch.name ~ '” razem z wpisami?',
+                label: 'Usuń nastaw',
+            }) }}
+            <small>Nastaw zniknie z aplikacji razem z wpisami.</small>
+        </div>
+    {% endif %}
+</div>

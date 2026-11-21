@@ -1,0 +1,47 @@
+{#
+    Pasek boczny: lista nastawów (kolejność listy nastawów, bez usuniętych) na każdej stronie.
+    Przy nastawie: typ słowem, data rozpoczęcia, data ostatniego wpisu i najbliższy plan, jako daty względne;
+    pełna data jest w atrybutach datetime i title elementu <time>.
+    Kropka typu jest ozdobna (aria-hidden), bo typ jest też napisany słowem (WCAG 1.4.1).
+
+    Parametry: current (opcjonalnie: nastaw otwartej strony, oznaczony aria-current).
+#}
+<aside class="sidebar">
+    <a class="brand" href="{{ path('dashboard') }}">Dziennik nastawów</a>
+    <a class="new-batch" href="{{ path('batch_new') }}">+ Nowy nastaw</a>
+    <nav aria-label="Nastawy">
+        <ul>
+            {% for item in sidebar_batches() %}
+                {% set b = item.batch %}
+                <li data-batch>
+                    <a href="{{ path('batch_show', {id: b.id}) }}"{% if current and current.id == b.id %} aria-current="page"{% endif %}>
+                        <span class="type-dot type-{{ b.type.value }}" aria-hidden="true"></span>
+                        <span>
+                            <span data-batch-name>{{ b.name }}</span>
+                            <small>
+                                <span data-batch-type>{{ b.type.label }}</span>
+                                ·
+                                {% if b.startDate %}
+                                    <time data-batch-start-date datetime="{{ b.startDate|date('Y-m-d') }}" title="{{ b.startDate|date('d.m.Y') }}">{{ b.startDate|batch_day }}</time>
+                                {% else %}
+                                    <span data-batch-start-date>bez daty startu</span>
+                                {% endif %}
+                                ·
+                                {% if item.lastEntryAt %}
+                                    <time data-batch-last-entry-at datetime="{{ item.lastEntryAt|date('Y-m-d\\TH:i') }}" title="{{ item.lastEntryAt|date('d.m.Y H:i') }}">{{ item.lastEntryAt|relative_day }}</time>
+                                {% else %}
+                                    <span data-batch-last-entry-at>brak wpisów</span>
+                                {% endif %}
+                                {% if item.nextPlanAt %}
+                                    · <time class="plan-text" data-batch-next-plan datetime="{{ item.nextPlanAt|date('Y-m-d\\TH:i') }}" title="{{ item.nextPlanAt|date('d.m.Y H:i') }}">plan {{ item.nextPlanAt|relative_day }}</time>
+                                {% endif %}
+                            </small>
+                        </span>
+                    </a>
+                </li>
+            {% else %}
+                <li><small>Brak nastawów</small></li>
+            {% endfor %}
+        </ul>
+    </nav>
+</aside>

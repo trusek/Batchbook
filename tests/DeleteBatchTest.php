@@ -8,21 +8,35 @@ final class DeleteBatchTest extends AppWebTestCase
     {
         $this->addBatch('Pomyłka');
         $this->addBatch('Miód z lipy');
-        $this->openBatch('Pomyłka');
 
-        $this->client->submitForm('Usuń');
+        $this->deleteBatch('Pomyłka');
 
         self::assertResponseRedirects('/', 303);
         $list = $this->client->followRedirect();
         self::assertSame(['Miód z lipy'], array_column($this->batchRows($list), 0));
     }
 
+    public function testDeleteIsOfferedOnlyAtTheBottomOfEditPage(): void
+    {
+        $this->addBatch('Pomyłka');
+        $page = $this->openBatch('Pomyłka');
+
+        self::assertCount(0, $page->filter('main form[action$="/usun"]'), 'Strona nastawu nie ma przycisków usuwania.');
+        self::assertCount(0, $page->selectButton('Usuń nastaw'));
+
+        $edit = $this->client->clickLink('Edytuj nastaw');
+
+        self::assertCount(1, $edit->selectButton('Usuń nastaw'));
+        $forms = $edit->filter('main form');
+        self::assertStringEndsWith('/usun', $forms->last()->attr('action'), 'Usuwanie jest na końcu strony edycji.');
+    }
+
     public function testDeleteButtonAsksForConfirmation(): void
     {
         $this->addBatch('Pomyłka');
-        $crawler = $this->openBatch('Pomyłka');
+        $crawler = $this->openBatchEdit('Pomyłka');
 
-        $form = $crawler->selectButton('Usuń')->form();
+        $form = $crawler->selectButton('Usuń nastaw')->form();
 
         self::assertSame('post', strtolower($form->getMethod()));
         $formNode = $form->getFormNode();
@@ -37,7 +51,7 @@ final class DeleteBatchTest extends AppWebTestCase
         $this->addEntry('Wpis przed usunięciem');
         $batchUrl = $this->client->getRequest()->getUri();
 
-        $this->client->submitForm('Usuń');
+        $this->deleteBatch('Pomyłka');
 
         $this->client->request('GET', $batchUrl);
         self::assertResponseStatusCodeSame(404);
@@ -55,9 +69,8 @@ final class DeleteBatchTest extends AppWebTestCase
     public function testDeleteWithoutValidCsrfTokenIsRejected(): void
     {
         $this->addBatch('Miód z lipy');
-        $this->openBatch('Miód z lipy');
 
-        $this->client->submitForm('Usuń', ['_csrf_token' => 'zly-token']);
+        $this->deleteBatch('Miód z lipy', ['_csrf_token' => 'zly-token']);
 
         self::assertResponseStatusCodeSame(403);
         $list = $this->client->request('GET', '/');

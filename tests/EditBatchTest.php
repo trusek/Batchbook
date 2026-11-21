@@ -9,7 +9,7 @@ final class EditBatchTest extends AppWebTestCase
         $this->addBatch('Miód z lipy', 'wine', '2026-03-10', 'Stary opis');
         $this->openBatch('Miód z lipy');
 
-        $this->client->clickLink('Edytuj');
+        $this->client->clickLink('Edytuj nastaw');
         $this->client->submitForm('Zapisz', [
             'batch[name]' => 'Miód lipowy',
             'batch[type]' => 'beer',
@@ -20,9 +20,9 @@ final class EditBatchTest extends AppWebTestCase
         self::assertResponseStatusCodeSame(303);
         $this->client->followRedirect();
         self::assertSelectorTextContains('h1', 'Miód lipowy');
-        self::assertSelectorTextContains('[data-batch-type]', 'Piwo');
-        self::assertSelectorTextContains('[data-batch-start-date]', '12.03.2026');
-        self::assertSelectorTextContains('[data-batch-description]', 'Nowy opis');
+        self::assertSelectorTextContains('main [data-batch-type]', 'Piwo');
+        self::assertSelectorTextContains('main [data-batch-start-date]', '12.03.2026');
+        self::assertSelectorTextContains('main [data-batch-description]', 'Nowy opis');
 
         $list = $this->client->request('GET', '/');
         self::assertSame([['Miód lipowy', 'Piwo', '12.03.2026']], $this->batchRows($list));
@@ -33,7 +33,7 @@ final class EditBatchTest extends AppWebTestCase
         $this->addBatch('Miód z lipy', 'beer', '2026-03-10', 'Opis');
         $this->openBatch('Miód z lipy');
 
-        $crawler = $this->client->clickLink('Edytuj');
+        $crawler = $this->client->clickLink('Edytuj nastaw');
 
         $values = $crawler->selectButton('Zapisz')->form()->getValues();
         self::assertSame('Miód z lipy', $values['batch[name]']);
@@ -47,7 +47,7 @@ final class EditBatchTest extends AppWebTestCase
         $this->addBatch('Miód z lipy');
         $this->openBatch('Miód z lipy');
 
-        $this->client->clickLink('Edytuj');
+        $this->client->clickLink('Edytuj nastaw');
         $this->client->submitForm('Zapisz', ['batch[name]' => '   ']);
 
         self::assertResponseStatusCodeSame(422);

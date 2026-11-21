@@ -17,8 +17,10 @@ use Symfony\Component\DomCrawler\Crawler;
  * - Baza testowa jest tworzona z migracji raz na przebieg (tests/bootstrap.php),
  *   a DAMA DoctrineTestBundle cofa zmiany po każdym teście, więc każdy test
  *   startuje na pustej bazie.
- * - Wspólne akcje: addBatch(), openBatch(), addEntry(), openEntryEdit(), editEntry(),
- *   deleteEntry(); odczyt widoków: batchRows(), lastEntryDates(), journal(), entryWithNote().
+ * - Lista nastawów jest w pasku bocznym na każdej stronie ([data-batch] w nawigacji „Nastawy”).
+ * - Wspólne akcje: addBatch(), openBatch(), openBatchEdit(), deleteBatch(), addEntry(), openEntryEdit(),
+ *   editEntry(), deleteEntry(); odczyt widoków: batchRows(), lastEntryDates(), sidebar(), journal(),
+ *   entryWithNote().
  */
 abstract class AppWebTestCase extends WebTestCase
 {
@@ -46,7 +48,7 @@ abstract class AppWebTestCase extends WebTestCase
 
     /**
      * Wysyła formularz nowego nastawu. Nie podąża za przekierowaniem
-     * (sukces: 303 na listę, błąd walidacji: 422 z formularzem).
+     * (sukces: 303 na pulpit, błąd walidacji: 422 z formularzem).
      */
     protected function addBatch(string $name, string $type = 'wine', string $startDate = '', string $description = ''): void
     {
@@ -60,13 +62,34 @@ abstract class AppWebTestCase extends WebTestCase
     }
 
     /**
-     * Otwiera stronę nastawu, klikając jego nazwę na liście nastawów.
+     * Otwiera stronę nastawu, klikając jego nazwę w pasku bocznym pulpitu.
      */
     protected function openBatch(string $name): Crawler
     {
         $crawler = $this->client->request('GET', '/');
 
-        return $this->client->click($crawler->filter('[data-batch]')->selectLink($name)->link());
+        return $this->client->click($this->sidebarItem($crawler, $name)->filter('a')->link());
+    }
+
+    /**
+     * Otwiera stronę edycji nastawu (ołówek „Edytuj nastaw” w nagłówku strony nastawu).
+     */
+    protected function openBatchEdit(string $name): Crawler
+    {
+        $this->openBatch($name);
+
+        return $this->client->clickLink('Edytuj nastaw');
+    }
+
+    /**
+     * Usuwa nastaw przyciskiem „Usuń nastaw” na stronie jego edycji. Nie podąża za przekierowaniem.
+     *
+     * @param array<string, string> $values np. ['_csrf_token' => 'zly'] do testów odrzucenia
+     */
+    protected function deleteBatch(string $name, array $values = []): void
+    {
+        $this->openBatchEdit($name);
+        $this->client->submitForm('Usuń nastaw', $values);
     }
 
     /**
@@ -83,7 +106,7 @@ abstract class AppWebTestCase extends WebTestCase
             $values['entry[occurredAt]'] = $occurredAt;
         }
 
-        $crawler = $this->client->submitForm('Dodaj wpis', $values);
+        $crawler = $this->client->submitForm('Dodaj', $values);
 
         return $this->client->getResponse()->isRedirect() ? $this->client->followRedirect() : $crawler;
     }
@@ -102,14 +125,14 @@ abstract class AppWebTestCase extends WebTestCase
     }
 
     /**
-     * Klika „Edytuj” przy wpisie o podanej notatce na aktualnie otwartej stronie nastawu.
+     * Klika ołówek „Edytuj wpis …” przy wpisie o podanej notatce na aktualnie otwartej stronie nastawu.
      * Zwraca odpowiedź z formularzem edycji.
      */
     protected function openEntryEdit(string $note): Crawler
     {
         $entry = $this->entryWithNote($this->client->getCrawler(), $note);
 
-        return $this->client->click($entry->selectLink('Edytuj')->link());
+        return $this->client->click($entry->selectLink('Edytuj wpis')->link());
     }
 
     /**
@@ -128,40 +151,78 @@ abstract class AppWebTestCase extends WebTestCase
     }
 
     /**
-     * Usuwa wpis o podanej notatce z aktualnie otwartej strony nastawu (przycisk „Usuń” przy wpisie).
-     * Nie podąża za przekierowaniem.
+     * Usuwa wpis o podanej notatce z aktualnie otwartej strony nastawu:
+     * otwiera edycję wpisu i klika w niej „Usuń wpis”. Nie podąża za przekierowaniem.
      *
      * @param array<string, string> $values np. ['_csrf_token' => 'zly'] do testów odrzucenia
      */
     protected function deleteEntry(string $note, array $values = []): void
     {
-        $entry = $this->entryWithNote($this->client->getCrawler(), $note);
-        $this->client->submit($entry->selectButton('Usuń')->form(), $values);
+        $this->openEntryEdit($note);
+        $this->client->submitForm('Usuń wpis', $values);
     }
 
     /**
+     * Pozycja nastawu o podanej nazwie w pasku bocznym.
+     */
+    protected function sidebarItem(Crawler $page, string $name): Crawler
+    {
+        $item = $page->filter('[data-batch]')->reduce(
+            static fn (Crawler $b): bool => trim($b->filter('[data-batch-name]')->text()) === $name,
+        );
+        self::assertGreaterThan(0, $item->count(), sprintf('Brak nastawu „%s” w pasku bocznym.', $name));
+
+        return $item->first();
+    }
+
+    /**
+     * Daty ostatniego wpisu z paska bocznego (pełna data z atrybutu title).
+     *
      * @return array<string, string> nazwa nastawu => data ostatniego wpisu (dd.mm.rrrr HH:MM lub pusta)
      */
     protected function lastEntryDates(Crawler $crawler): array
     {
         $dates = [];
         $crawler->filter('[data-batch]')->each(static function (Crawler $row) use (&$dates): void {
-            $dates[trim($row->filter('[data-batch-name]')->text())] = trim($row->filter('[data-batch-last-entry-at]')->text());
+            $dates[trim($row->filter('[data-batch-name]')->text())] = (string) $row->filter('[data-batch-last-entry-at]')->attr('title');
         });
 
         return $dates;
     }
 
     /**
-     * @return list<array{string, string, string}> nazwa, typ, data rozpoczęcia
+     * Nastawy w pasku bocznym, w kolejności wyświetlania.
+     *
+     * @return list<array{string, string, string}> nazwa, typ, data rozpoczęcia (dd.mm.rrrr z atrybutu title lub pusta)
      */
     protected function batchRows(Crawler $crawler): array
     {
         return $crawler->filter('[data-batch]')->each(static fn (Crawler $row): array => [
             trim($row->filter('[data-batch-name]')->text()),
             trim($row->filter('[data-batch-type]')->text()),
-            trim($row->filter('[data-batch-start-date]')->text()),
+            (string) $row->filter('[data-batch-start-date]')->attr('title'),
         ]);
+    }
+
+    /**
+     * Teksty paska bocznego, tak jak widzi je użytkownik (daty względne).
+     *
+     * @return array<string, array{type: string, start: string, last: string, plan: string}> nazwa nastawu => teksty
+     */
+    protected function sidebar(Crawler $crawler): array
+    {
+        $items = [];
+        $crawler->filter('[data-batch]')->each(static function (Crawler $row) use (&$items): void {
+            $plan = $row->filter('[data-batch-next-plan]');
+            $items[trim($row->filter('[data-batch-name]')->text())] = [
+                'type' => trim($row->filter('[data-batch-type]')->text()),
+                'start' => trim($row->filter('[data-batch-start-date]')->text()),
+                'last' => trim($row->filter('[data-batch-last-entry-at]')->text()),
+                'plan' => $plan->count() > 0 ? trim($plan->text()) : '',
+            ];
+        });
+
+        return $items;
     }
 
     /**
