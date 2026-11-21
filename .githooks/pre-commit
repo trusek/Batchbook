@@ -1,0 +1,13 @@
+#!/bin/sh
+# Blokuje commit, gdy `composer check` (lintery, PHPStan, PHPUnit) nie przechodzi.
+# Instalacja (raz na kopię roboczą): git config core.hooksPath .githooks
+# Pominięcie w wyjątkowej sytuacji: git commit --no-verify
+#
+# Sprawdzane są pliki z kopii roboczej, nie tylko te dodane do indeksu.
+# -T: bez TTY. Hook nie ma terminala, a z TTY docker zawiesza się w Git Bashu.
+set -e
+
+cd "$(git rev-parse --show-toplevel)"
+
+echo "pre-commit: composer check w kontenerze (pominięcie: git commit --no-verify)"
+exec docker compose run --rm -T app composer check

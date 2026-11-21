@@ -28,7 +28,7 @@ final class DeleteBatchTest extends AppWebTestCase
 
         self::assertCount(1, $edit->selectButton('Usuń nastaw'));
         $forms = $edit->filter('main form');
-        self::assertStringEndsWith('/usun', $forms->last()->attr('action'), 'Usuwanie jest na końcu strony edycji.');
+        self::assertStringEndsWith('/usun', (string) $forms->last()->attr('action'), 'Usuwanie jest na końcu strony edycji.');
     }
 
     public function testDeleteButtonAsksForConfirmation(): void

@@ -2,9 +2,13 @@
 
 Polecenia uruchamiania i testów są w [`README.md`](../../README.md). Tu są tylko rzeczy, których nie widać w konfiguracji.
 
+## Zanim zgłosisz pracę jako gotową
+
+`composer check` musi przechodzić ([README: Sprawdzenia przed commitem](../../README.md#sprawdzenia-przed-commitem)). Hook pre-commit działa tylko w kopii, w której ustawiono `core.hooksPath`. Świeża kopia robocza (np. worktree agenta) go nie ma, więc zainstaluj hook albo uruchom `check` ręcznie.
+
 ## Docker na Windows
 
-- **Uruchamiaj Dockera z PowerShella, nie z Git Basha.** `docker compose run` z bind mountem zawiesza się, gdy wywołuje go Git Bash. Z PowerShella działa. Hipotezę, że pomaga `-T` (bez TTY), sprawdza #13.
+- **Uruchamiaj Dockera z PowerShella, nie z Git Basha.** `docker compose run` z bind mountem zawiesza się, gdy wywołuje go Git Bash. Z PowerShella działa. Wyjątek: hook pre-commit wywołuje `docker compose run -T` (bez TTY) z Git Basha i to działało przy wdrażaniu #10. Czy `-T` wystarcza zawsze, sprawdza #13.
 - **Każda kopia robocza ma osobny projekt Compose.** Nazwa projektu to nazwa katalogu, więc kontenery i wolumeny kopii (np. worktree agenta) nie kolidują. Serwer dev drugiej kopii uruchom na wolnym porcie: `$env:HTTP_PORT=8081; docker compose up`.
 
 ## Pliki z PowerShella mają BOM

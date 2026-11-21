@@ -1,0 +1,23 @@
+# Rozszerzenia dołączone ręcznie zamiast przez wtyczkę phpstan/extension-installer.
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    # Poziom 9+ wymaga typowania wyników DQL (objectManagerLoader) w repozytoriach.
+    level: 8
+    paths:
+        - src
+        - tests
+    tmpDir: var/cache/phpstan
+    symfony:
+        # Kontener kompiluje `lint:container`, które `composer check` uruchamia wcześniej.
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    doctrine:
+        # Formularze wiążą się wprost z encjami: pole wymagane jest null, dopóki
+        # walidacja (NotBlank/NotNull) nie potwierdzi wartości przed zapisem.
+        allowNullablePropertyForRequiredField: true
