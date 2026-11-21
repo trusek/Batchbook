@@ -43,14 +43,21 @@ docker compose run --rm app bin/phpunit
 Testy są funkcjonalne (`WebTestCase`, przez HTTP) i dziedziczą po `tests/AppWebTestCase.php`:
 zegar jest zamrożony (`MockClock`), baza testowa (`var/data/test.db`) powstaje z migracji na początku przebiegu,
 a każdy test startuje na pustej bazie (rollback transakcji przez DAMA DoctrineTestBundle).
+Wyjątek: `tests/Tools/` to testy jednostkowe narzędzi z `tools/` (reguł sprawdzanych przez `composer check`).
 
 ## Sprawdzenia przed commitem
 
-Jedno polecenie uruchamia lintery (Twig, YAML, kontener), PHPStan (`phpstan.dist.neon`) i PHPUnit:
+Jedno polecenie uruchamia sprawdzenia plików (`bin/check-source-files`), lintery (Twig, YAML, kontener), PHPStan (`phpstan.dist.neon`) i PHPUnit:
 
 ```sh
 docker compose run --rm -T app composer check
 ```
+
+Reguły projektu sprawdzane automatycznie (każda ma test w `tests/Tools/`):
+
+- „Teraz” wyłącznie z `ClockInterface`: PHPStan zgłasza funkcje i konstruktory, które same czytają bieżący czas (`tools/PHPStan/NoImplicitNowRule.php`).
+- Testy tylko przez HTTP: PHPStan zgłasza w `App\Tests` odwołania do repozytoriów, `EntityManagerInterface` i `Connection` (`tools/PHPStan/HttpOnlyTestsRule.php`).
+- Pliki: BOM na początku `*.php`, `*.twig`, `*.yaml` oraz w Twigu `date('Y-m-d\TH:i')` z pojedynczym backslashem, który Twig zjada; poprawnie `date('Y-m-d\\TH:i')` (`tools/SourceFiles/SourceFileChecker.php`).
 
 Hook pre-commit z `.githooks/` uruchamia to samo polecenie i blokuje commit, gdy coś nie przechodzi.
 Sprawdza całą kopię roboczą, nie tylko pliki dodane do commita.

@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+// Sprawdzenia plików, których nie łapią lintery (BOM, format date() w Twigu).
+// Uruchamiane przez `composer check`. Reguły: tools/SourceFiles/SourceFileChecker.php.
+
+use App\Tools\SourceFiles\SourceFileChecker;
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+$violations = (new SourceFileChecker())->check(dirname(__DIR__));
+
+foreach ($violations as $violation) {
+    fwrite(STDERR, $violation.PHP_EOL);
+}
+
+if ([] !== $violations) {
+    fwrite(STDERR, sprintf('check-source-files: %d naruszeń.%s', count($violations), PHP_EOL));
+    exit(1);
+}
+
+echo 'check-source-files: OK'.PHP_EOL;

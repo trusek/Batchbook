@@ -13,7 +13,7 @@ Polecenia uruchamiania i testów są w [`README.md`](../../README.md). Tu są ty
 
 ## Pliki z PowerShella mają BOM
 
-PowerShell 5.1 z `-Encoding utf8` (`Set-Content`, `Out-File`) zapisuje UTF-8 z BOM. PHP z BOM kończy się błędem „Namespace declaration statement has to be the very first statement”. Pliki zapisuj narzędziem Write/Edit. Jeśli BOM już jest, usuń go w Git Bashu:
+PowerShell 5.1 z `-Encoding utf8` (`Set-Content`, `Out-File`) zapisuje UTF-8 z BOM. PHP z BOM kończy się błędem „Namespace declaration statement has to be the very first statement”. `composer check` zgłasza BOM w `*.php`, `*.twig` i `*.yaml`. Pliki zapisuj narzędziem Write/Edit. Jeśli BOM już jest, usuń go w Git Bashu:
 
 ```sh
 sed -i '1s/^\xEF\xBB\xBF//' plik.php
@@ -34,7 +34,7 @@ sed -i '1s/^\xEF\xBB\xBF//' plik.php
 ## Symfony i Twig
 
 - **CSRF:** ręcznie wpisany `csrf_token('<id>')` jest bezstanowy tylko wtedy, gdy `<id>` jest na liście `framework.csrf_protection.stateless_token_ids` (`config/packages/csrf.yaml`). Nowy identyfikator dopisz do tej listy.
-- **Data w Twigu:** litera `T` w formacie wymaga podwójnego backslasha: `date('Y-m-d\\TH:i')`. Z pojedynczym wychodzi `2026-11-24CET18:00`.
+- **Data w Twigu:** litera `T` w formacie wymaga podwójnego backslasha: `date('Y-m-d\\TH:i')`. Z pojedynczym wychodzi `2026-11-24CET18:00`. `composer check` to zgłasza.
 
 ## CSS
 
