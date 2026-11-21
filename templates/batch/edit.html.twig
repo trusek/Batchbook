@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edycja: {{ batch.name }}{% endblock %}
+
+{% block body %}
+    {{ include('batch/_form.html.twig', {form: form, heading: 'Edycja nastawu', cancel: path('batch_show', {id: batch.id}), batch: batch}) }}
+{% endblock %}

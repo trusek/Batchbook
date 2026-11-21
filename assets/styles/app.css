@@ -1,1 +1,194 @@
-/* Własne style aplikacji, nakładane na Pico.css. */
+/*
+ * Własne style aplikacji, nakładane na Pico.css. Układ „Notatnik”: pasek boczny z nastawami + treść,
+ * dziennik jako arkusz (Kiedy | Notatka).
+ *
+ * Dostępność (WCAG 2.2 AA), kontrasty policzone na kolorach Pico (jasny / ciemny motyw):
+ * tekst ≥ 4.5:1, ikony i obramowania pól ≥ 3:1 (1.4.3, 1.4.11).
+ */
+
+/* ---------- Kolory ---------- */
+body {
+    /* Obramowanie pól: Pico ma 1.5:1, tu 3.3:1 (jasny) / 4.2:1 (ciemny). */
+    --pico-form-element-border-color: #868e9c;
+    --type-wine: #9b2c4a; /* 7.4:1 na białym */
+    --type-beer: #875a00; /* 6.0:1 na białym */
+}
+@media only screen and (prefers-color-scheme: dark) {
+    :root:not([data-theme]) body {
+        --pico-form-element-border-color: #6f7a8e;
+        --type-wine: #f19ab4; /* 8.6:1 na ciemnym */
+        --type-beer: #e9b949; /* 9.9:1 na ciemnym */
+    }
+}
+[data-theme=dark] body { --pico-form-element-border-color: #6f7a8e; --type-wine: #f19ab4; --type-beer: #e9b949; }
+
+/* ---------- Pomocnicze ---------- */
+/* Tekst tylko dla czytników ekranu. */
+.sr-only {
+    position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.muted { color: var(--pico-muted-color); }
+.grow { flex: 1; min-width: 0; }
+.icon { vertical-align: -2px; }
+
+/* Pomiń nawigację (2.4.1): niewidoczny, pojawia się przy fokusie z klawiatury. */
+.skip-link {
+    position: absolute; left: .5rem; top: -3rem; z-index: 100; padding: .5rem 1rem;
+    background: var(--pico-primary-background); color: var(--pico-primary-inverse); border-radius: var(--pico-border-radius);
+}
+.skip-link:focus { top: .5rem; }
+
+/* Typ nastawu: kolorowa kropka (ozdobna) i słowo w kolorze typu — nigdy sam kolor (1.4.1). */
+.type-wine { --type-color: var(--type-wine); }
+.type-beer { --type-color: var(--type-beer); }
+.type-dot {
+    display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; flex: none;
+    margin: .45rem .1rem 0 0; vertical-align: middle; background: var(--type-color, var(--pico-muted-color));
+}
+.batch-type { color: var(--type-color); font-weight: 600; }
+
+/* Ikony edycji: zawsze widoczne, cel kliknięcia min. 24×24 px (2.5.8). */
+.icon-link {
+    display: inline-grid; place-items: center; min-width: 24px; min-height: 24px;
+    color: var(--pico-muted-color); text-decoration: none; border-radius: 4px; vertical-align: middle;
+}
+.icon-link:hover { color: var(--pico-primary); background: var(--pico-muted-border-color); }
+h1 .icon-link { font-size: 1rem; }
+
+/* Wpis przyszły (plan): czas i etykieta w odcieniu akcentu ≥ 6.6:1 na tle wiersza. */
+.plan-tag {
+    font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700;
+    padding: .05rem .35rem; margin-left: .1rem; border-radius: 3px; border: 1px solid currentColor; vertical-align: 1px;
+    color: var(--pico-primary-hover);
+}
+.plan-text { color: var(--pico-primary); }
+
+/* Rzadkie, niszczące akcje (Usuń): tekstowy link, cel min. 24 px; kolor del Pico 7.9:1 / 5.9:1. */
+.danger { margin-left: auto; }
+.danger form { margin: 0; }
+.danger button {
+    all: unset; cursor: pointer; text-decoration: underline; font-size: .85rem;
+    min-height: 24px; display: inline-flex; align-items: center; color: var(--pico-del-color);
+}
+.danger-zone {
+    margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--pico-muted-border-color);
+    display: flex; gap: 1rem; align-items: baseline;
+}
+.danger-zone small { color: var(--pico-muted-color); }
+
+/* ---------- Układ: pasek boczny + treść ---------- */
+.shell { display: grid; grid-template-columns: 17rem 1fr; min-height: 100vh; }
+.content { padding: 1.25rem 2rem; min-width: 0; }
+.content:focus { outline: none; }
+/* Treść nie rozjeżdża się na szerokim ekranie: akcje blisko tekstu. */
+.content > * { max-width: 60rem; }
+
+.sidebar {
+    position: sticky; top: 0; height: 100vh; overflow: auto; padding: 1rem .75rem;
+    background: color-mix(in srgb, var(--pico-muted-border-color) 35%, var(--pico-background-color));
+    border-right: 1px solid var(--pico-muted-border-color);
+}
+.brand { display: block; font-weight: 700; text-decoration: none; margin-bottom: 1rem; }
+.new-batch {
+    display: block; padding: .4rem .6rem; margin-bottom: .75rem; font-size: .9rem; text-decoration: none;
+    border: 1px dashed var(--pico-muted-color); border-radius: var(--pico-border-radius);
+}
+.sidebar nav, .sidebar nav ul { display: block; }
+.sidebar ul { padding: 0; margin: 0; }
+.sidebar li { list-style: none; margin: 0; }
+.sidebar nav a {
+    display: flex; gap: .5rem; align-items: flex-start; padding: .4rem .5rem; margin: 0; min-height: 24px;
+    border-radius: var(--pico-border-radius); color: inherit; text-decoration: none; font-size: .9rem; line-height: 1.25;
+}
+.sidebar nav a:hover { background: var(--pico-muted-border-color); }
+/* Zaznaczony nastaw: bez przezroczystości (białe na niebieskim 5.2:1). */
+.sidebar nav a[aria-current] { background: var(--pico-primary-background); color: var(--pico-primary-inverse); }
+.sidebar nav a[aria-current] small,
+.sidebar nav a[aria-current] .plan-text { color: inherit; }
+.sidebar nav small { display: block; color: var(--pico-muted-color); font-size: .75rem; }
+
+/* ---------- Pulpit ---------- */
+.blank { padding: 4rem 0; text-align: center; }
+.columns { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.columns h2 { font-size: 1.1rem; }
+.feed { padding: 0; margin: 0; }
+.feed li {
+    list-style: none; display: grid; grid-template-columns: 8rem 1fr; gap: .75rem; margin: 0;
+    padding: .5rem 0; border-top: 1px solid var(--pico-muted-border-color);
+}
+.feed li.is-future time { color: var(--pico-primary-hover); font-weight: 600; }
+.feed time { font-size: .85rem; display: flex; flex-direction: column; }
+.feed time small { color: var(--pico-muted-color); font-weight: 400; }
+.feed p { margin: 0; font-size: .9rem; }
+.feed a { font-weight: 600; font-size: .9rem; text-decoration: none; }
+.feed .type-dot { margin: 0 .4rem 0 0; }
+
+/* ---------- Strona nastawu ---------- */
+.batch-head { margin-bottom: .5rem; }
+.batch-head h1 { margin: 0; font-size: 1.6rem; }
+.batch-meta { color: var(--pico-muted-color); font-size: .9rem; }
+.batch-description { font-size: .9rem; margin-bottom: 1rem; }
+
+/* Dziennik jako arkusz. */
+.log { border: 1px solid var(--pico-muted-border-color); border-radius: var(--pico-border-radius); font-size: .92rem; }
+.log turbo-frame { display: block; }
+.log-row {
+    display: grid; grid-template-columns: 12.5rem 1fr; gap: .75rem; align-items: start;
+    padding: .45rem .75rem; border-top: 1px solid var(--pico-muted-border-color); margin: 0;
+}
+.log-head { border-top: 0; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--pico-muted-color); }
+.log-row time { font-variant-numeric: tabular-nums; color: var(--pico-muted-color); }
+.log-row.is-future { background: color-mix(in srgb, var(--pico-primary) 10%, transparent); }
+.log-row.is-future time { color: var(--pico-primary-hover); font-weight: 600; }
+.log-empty { padding: .75rem; margin: 0; }
+.when { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+
+/* Pierwszy wiersz: szybki wpis (data | notatka + Dodaj). */
+.log-new { background: color-mix(in srgb, var(--pico-primary) 6%, transparent); }
+.log-new input, .log-new textarea, .log-new button { margin: 0; padding: .3rem .5rem; font-size: .9rem; height: auto; }
+.log-new textarea { resize: vertical; }
+.new-note { display: flex; gap: .5rem; align-items: flex-start; }
+.new-note button { width: auto; flex: none; }
+
+/* Edycja wpisu w miejscu. */
+.log-edit { display: block; background: color-mix(in srgb, var(--pico-primary) 6%, transparent); }
+.log-edit form { margin: 0; }
+.edit-grid { display: grid; grid-template-columns: 12.5rem 1fr; gap: .75rem; }
+.edit-grid input, .edit-grid textarea { margin: 0; padding: .3rem .5rem; font-size: .9rem; height: auto; }
+.edit-actions { display: flex; gap: 1rem; align-items: center; margin-top: .5rem; font-size: .9rem; }
+.edit-actions > button { width: auto; margin: 0; padding: .3rem .9rem; }
+
+/* Błędy pól w wierszach dziennika. */
+.log-new ul, .log-edit ul { margin: .25rem 0 0; padding: 0; list-style: none; color: var(--pico-del-color); font-size: .85rem; }
+.log-new li, .log-edit li { list-style: none; }
+
+/* ---------- Formularz nastawu: zwarty, nazwa i typ w jednym rzędzie ---------- */
+.batch-form { max-width: 38rem; }
+.batch-form h1 { font-size: 1.5rem; }
+.form-row { display: grid; gap: 1rem; }
+.form-row-name { grid-template-columns: 1fr 10rem; }
+.form-row-date { grid-template-columns: 12rem; }
+.form-actions { display: flex; gap: 1rem; align-items: center; }
+.form-actions button { width: auto; margin: 0; }
+
+/* ---------- Wąskie ekrany: pasek boczny nad treścią, wiersze dziennika w jednej kolumnie ---------- */
+@media (max-width: 800px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--pico-muted-border-color); }
+    .sidebar nav ul { display: flex; overflow-x: auto; gap: .25rem; }
+    .sidebar nav a { white-space: nowrap; }
+    .content { padding: 1rem; }
+    .log-row, .edit-grid { grid-template-columns: 1fr; gap: .3rem; }
+    .log-head { display: none; }
+    .columns { grid-template-columns: 1fr; }
+}
+@media (max-width: 500px) {
+    .form-row-name, .form-row-date { grid-template-columns: 1fr; }
+}
+
+/* Widoczny fokus (2.4.7, 2.4.11), także na przyciskach z `all: unset` (np. .danger button):
+   na końcu pliku, żeby przy równej specyficzności wygrywał z regułami wyżej. */
+:is(a, button, summary):focus-visible {
+    outline: 3px solid var(--pico-primary); outline-offset: 2px; border-radius: 3px; box-shadow: none;
+}

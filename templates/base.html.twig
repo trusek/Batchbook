@@ -14,15 +14,15 @@
         {% endblock %}
     </head>
     <body>
-        <header class="container">
-            <nav>
-                <ul>
-                    <li><a href="{{ path('batch_index') }}"><strong>Dziennik nastawów</strong></a></li>
-                </ul>
-            </nav>
-        </header>
-        <main class="container">
-            {% block body %}{% endblock %}
-        </main>
+        {# Układ „Notatnik”: pasek boczny z nastawami na każdej stronie + treść.
+           Link pomijający pasek jest pierwszym elementem strony (WCAG 2.4.1). #}
+        <a class="skip-link" href="#tresc">Przejdź do treści</a>
+        <div class="shell">
+            {# Strony nastawu (podgląd, edycja) przekazują `batch`: ten nastaw jest zaznaczony w pasku. #}
+            {{ include('_sidebar.html.twig', {current: batch ?? null}) }}
+            <main class="content" id="tresc" tabindex="-1">
+                {% block body %}{% endblock %}
+            </main>
+        </div>
     </body>
 </html>

@@ -20,6 +20,12 @@ Przy pierwszym starcie kontener instaluje zależności (`vendor/`) i wykonuje mi
 `compose.override.yaml` jest wczytywany automatycznie: montuje kod z hosta i uruchamia aplikację w środowisku `dev`.
 Baza SQLite leży w `var/data/` na wolumenie Dockera `db_data`, więc przetrwa przebudowę obrazu.
 
+`APP_SECRET` w `.env.dev` jest jawną wartością tylko do developmentu. Własną ustaw w `.env.dev.local` (plik jest w `.gitignore`):
+
+```sh
+echo "APP_SECRET=$(openssl rand -hex 16)" > .env.dev.local
+```
+
 Polecenia w kontenerze:
 
 ```sh

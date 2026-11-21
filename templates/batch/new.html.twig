@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nowy nastaw{% endblock %}
+
+{% block body %}
+    {{ include('batch/_form.html.twig', {form: form, heading: 'Nowy nastaw', cancel: path('dashboard')}, with_context = false) }}
+{% endblock %}

@@ -9,3 +9,4 @@ framework:
             - submit
             - authenticate
             - logout
+            - !php/const App\Controller\DeleteForm::TOKEN_ID
