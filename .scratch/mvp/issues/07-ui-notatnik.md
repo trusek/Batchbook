@@ -4,7 +4,7 @@
 
 **Blocked by:** 01–06 (resolved)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 ## Decyzje użytkownika (z sesji prototypowania)
 
@@ -41,3 +41,5 @@
 - [x] Spec zaktualizowany w sekcji „Ekrany i interakcje” (ekran startowy = pulpit, lista w pasku bocznym, daty względne w pasku).
 
 ## Comments
+
+Prototyp (warianty A/B/C, przełącznik) zachowany jako źródło na gałęzi `prototype/ui-variants` (ostatni commit 74257f2). Werdykt: wariant C, z decyzjami użytkownika opisanymi wyżej. Wbudowane w `mvp` commitem 8cc790b.
