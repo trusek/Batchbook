@@ -1,3 +1,5 @@
+Uruchamianie, testy i pułapki Dockera na Windows: `docs/agents/dev-environment.md`.
+
 ## Agent skills
 
 ### Issue tracker
