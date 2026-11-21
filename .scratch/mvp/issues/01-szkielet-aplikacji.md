@@ -6,13 +6,13 @@
 
 **Status:** ready-for-agent
 
-- [ ] Symfony (webapp) z Doctrine ORM, migracjami i bazą SQLite.
-- [ ] Twig, Symfony UX Turbo i Stimulus, Pico.css, AssetMapper, bez Node'a.
-- [ ] Docker Compose z jednym kontenerem (FrankenPHP); plik SQLite na wolumenie przetrwa przebudowę obrazu; `docker compose up` stawia działającą aplikację.
-- [ ] `.gitattributes` wymusza końce linii LF.
-- [ ] Domyślna strefa czasowa aplikacji to Europe/Warsaw.
-- [ ] Bieżący czas pochodzi z wstrzykiwanego zegara Symfony (`ClockInterface`); w testach podmieniany na `MockClock`.
-- [ ] Infrastruktura `WebTestCase`: osobna baza testowa SQLite, czysty stan dla każdego testu.
-- [ ] Layout po polsku (`lang="pl"`), czytelny na telefonie.
-- [ ] Test: przy pustej bazie ekran startowy pokazuje komunikat o braku nastawów i link do dodania nastawu.
-- [ ] README z instrukcją uruchomienia aplikacji i testów.
+- [x] Symfony (webapp) z Doctrine ORM, migracjami i bazą SQLite.
+- [x] Twig, Symfony UX Turbo i Stimulus, Pico.css, AssetMapper, bez Node'a.
+- [x] Docker Compose z jednym kontenerem (FrankenPHP); plik SQLite na wolumenie przetrwa przebudowę obrazu; `docker compose up` stawia działającą aplikację.
+- [x] `.gitattributes` wymusza końce linii LF.
+- [x] Domyślna strefa czasowa aplikacji to Europe/Warsaw.
+- [x] Bieżący czas pochodzi z wstrzykiwanego zegara Symfony (`ClockInterface`); w testach podmieniany na `MockClock`.
+- [x] Infrastruktura `WebTestCase`: osobna baza testowa SQLite, czysty stan dla każdego testu.
+- [x] Layout po polsku (`lang="pl"`), czytelny na telefonie.
+- [x] Test: przy pustej bazie ekran startowy pokazuje komunikat o braku nastawów i link do dodania nastawu.
+- [x] README z instrukcją uruchomienia aplikacji i testów.

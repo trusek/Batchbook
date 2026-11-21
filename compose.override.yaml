@@ -1,0 +1,12 @@
+# Development: wczytywany automatycznie przez `docker compose`.
+# Kod jest podmontowany z hosta, środowisko (APP_ENV) bierze się z plików .env.
+services:
+  app:
+    # Domyślna nazwa obrazu (<projekt>-app), żeby nie mieszać obrazu dev z prod.
+    image: !reset null
+    build:
+      target: dev
+    restart: "no"
+    volumes:
+      - ./:/app
+      - db_data:/app/var/data

@@ -1,0 +1,23 @@
+<?php
+
+namespace App;
+
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+
+class Kernel extends BaseKernel
+{
+    use MicroKernelTrait;
+
+    /**
+     * Cała aplikacja działa na lokalnym czasie ściennym, niezależnie od php.ini.
+     */
+    public const TIMEZONE = 'Europe/Warsaw';
+
+    public function boot(): void
+    {
+        date_default_timezone_set(self::TIMEZONE);
+
+        parent::boot();
+    }
+}

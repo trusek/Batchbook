@@ -1,0 +1,13 @@
+.git
+.idea
+.scratch
+.phpunit.cache
+.env.local
+.env.*.local
+var
+vendor
+public/assets
+public/bundles
+assets/vendor
+compose*.yaml
+Dockerfile
