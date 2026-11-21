@@ -13,6 +13,11 @@ parameters:
     paths:
         - src
         - tests
+        - tools
+    excludePaths:
+        analyse:
+            # Przykłady naruszeń dla testów reguł z tools/PHPStan.
+            - tests/Tools/PHPStan/data
     tmpDir: var/cache/phpstan
     symfony:
         # Kontener kompiluje `lint:container`, które `composer check` uruchamia wcześniej.
@@ -21,3 +26,8 @@ parameters:
         # Formularze wiążą się wprost z encjami: pole wymagane jest null, dopóki
         # walidacja (NotBlank/NotNull) nie potwierdzi wartości przed zapisem.
         allowNullablePropertyForRequiredField: true
+
+# Reguły projektu (tools/PHPStan), testowane w tests/Tools/PHPStan.
+rules:
+    - App\Tools\PHPStan\NoImplicitNowRule
+    - App\Tools\PHPStan\HttpOnlyTestsRule
