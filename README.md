@@ -44,6 +44,24 @@ Testy są funkcjonalne (`WebTestCase`, przez HTTP) i dziedziczą po `tests/AppWe
 zegar jest zamrożony (`MockClock`), baza testowa (`var/data/test.db`) powstaje z migracji na początku przebiegu,
 a każdy test startuje na pustej bazie (rollback transakcji przez DAMA DoctrineTestBundle).
 
+## Sprawdzenia przed commitem
+
+Jedno polecenie uruchamia lintery (Twig, YAML, kontener), PHPStan (`phpstan.dist.neon`) i PHPUnit:
+
+```sh
+docker compose run --rm -T app composer check
+```
+
+Hook pre-commit z `.githooks/` uruchamia to samo polecenie i blokuje commit, gdy coś nie przechodzi.
+Sprawdza całą kopię roboczą, nie tylko pliki dodane do commita.
+Zainstaluj go raz w każdej kopii roboczej:
+
+```sh
+git config core.hooksPath .githooks
+```
+
+W wyjątkowej sytuacji hook można pominąć: `git commit --no-verify`.
+
 ## Uruchomienie docelowe (serwer)
 
 ```sh

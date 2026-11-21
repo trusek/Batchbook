@@ -2,6 +2,8 @@
 
 namespace App\Tests;
 
+use Symfony\Component\DomCrawler\Field\FormField;
+
 final class EditEntryTest extends AppWebTestCase
 {
     public function testEditedEntryMovesToItsPlaceInJournal(): void
@@ -76,7 +78,11 @@ final class EditEntryTest extends AppWebTestCase
         $this->addEntry('dodano pożywkę', '2026-03-10T21:45');
 
         $form = $this->openEntryEdit('dodano pożywkę')->selectButton('Zapisz')->form();
-        $changedDateOnly = str_replace('2026-03-10', '2026-03-11', $form['entry_edit[occurredAt]']->getValue());
+        $occurredAt = $form->get('entry_edit[occurredAt]');
+        self::assertInstanceOf(FormField::class, $occurredAt);
+        $value = $occurredAt->getValue();
+        self::assertIsString($value);
+        $changedDateOnly = str_replace('2026-03-10', '2026-03-11', $value);
         $this->client->submit($form, ['entry_edit[occurredAt]' => $changedDateOnly]);
 
         self::assertSame([['11.03.2026 21:45', 'dodano pożywkę']], $this->journal($this->client->followRedirect()));
